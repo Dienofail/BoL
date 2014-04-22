@@ -1,4 +1,4 @@
-local version = "0.08"
+local version = "0.09"
 --[[
 
 Free Lucian!
@@ -20,6 +20,10 @@ v0.05 - Bug fixes
 v0.06 - Fixes to spellweave
 
 v0.07 - Further fixes to spellweave
+
+v0.08 - Github
+
+v0.09 - Moved minion update to Q function
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -141,7 +145,6 @@ end
 
 function OnTick()
 	if initDone then
-		EnemyMinions:update()
 		Check()
 		target = GetCustomTarget()
 		Qtarget = ts.target
@@ -203,6 +206,7 @@ function Harass(Target)
 end
 
 function CastQ(Target)
+	EnemyMinions:update()
 	-- print(CountEnemyNearPerson(Target,800))
 	-- print(ValidTarget(Target, 1300))
 	if ValidTarget(Target, 1300) and not Target.dead and GetDistance(Target) > 550 and GetDistance(Target) < SpellQ.ExtendedRange then
@@ -257,6 +261,7 @@ function CastW(Target)
 end
 
 function Farm()
+	EnemyMinions:update()
 	if Config.FarmSub.useQ then
 		FarmQ()
 	end
