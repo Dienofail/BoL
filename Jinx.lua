@@ -1,4 +1,4 @@
-local version = "1.04"
+local version = "1.05"
 --[[
 
 Free Jinx!
@@ -41,6 +41,11 @@ v1.01 - Now defaults to pow pow when farming
 v1.02 - Fixed pow pow farm 
 
 v1.03 - Added farm press requirement for pow pow
+
+v1.04 - Github
+
+v1.05 - Fixes to Q swapping
+
 ]]
 
 if myHero.charName ~= "Jinx" then return end
@@ -237,25 +242,25 @@ end
 
 function Swap(Target)
 	if Target ~= nil and not Target.dead and ValidTarget(Target) and QReady then
-		local PredictedPos, HitChance = VP:GetPredictedPos(Target, 0.35, math.huge, myHero, false)
+		local PredictedPos, HitChance = VP:GetPredictedPos(Target, 0.25, math.huge, myHero, false)
 		if isFishBones then
-			if Config.Extras.SwapThree and FishStacks == 3 and GetDistance(Target) < QRange+VP:GetHitBox(Target) and GetDistance(PredictedPos) < QRange+VP:GetHitBox(Target) then
+			if Config.Extras.SwapThree and FishStacks == 3 and GetDistance(PredictedPos) < QRange+VP:GetHitBox(Target) then
 				CastSpell(_Q)
 			end
-			if Config.Extras.SwapDistance and GetDistance(Target) > 575+VP:GetHitBox(Target) and GetDistance(PredictedPos) < QRange+VP:GetHitBox(Target) and GetDistance(PredictedPos) > 600+VP:GetHitBox(Target) then
+			if Config.Extras.SwapDistance and GetDistance(PredictedPos) < QRange+VP:GetHitBox(Target) and GetDistance(PredictedPos) > 600+VP:GetHitBox(Target) then
 				CastSpell(_Q)
 			end
-			if Config.Extras.SwapAOE and CountEnemyNearPerson(Target, 150) > 1 and FishStacks > 1 then 
+			if Config.Extras.SwapAOE and CountEnemyNearPerson(Target, 150) > 1 and FishStacks > 2 then 
 				CastSpell(_Q)
 			end
 		else
 			if Config.Extras.SwapAOE and CountEnemyNearPerson(Target, 150) > 1 then 
 				return
 			end
-			if Config.Extras.SwapThree and FishStacks < 3 and GetDistance(Target) < 600+VP:GetHitBox(Target) and GetDistance(PredictedPos) < 600+VP:GetHitBox(Target) then
+			if Config.Extras.SwapThree and FishStacks < 3 and GetDistance(PredictedPos) < 600+VP:GetHitBox(Target) then
 				CastSpell(_Q)
 			end
-			if Config.Extras.SwapDistance and GetDistance(Target) <600 + VP:GetHitBox(Target) and GetDistance(PredictedPos) < 600+VP:GetHitBox(Target) then
+			if Config.Extras.SwapDistance and GetDistance(PredictedPos) < 600+VP:GetHitBox(Target) then
 				CastSpell(_Q)
 			end
 		end
