@@ -1,3 +1,4 @@
+local version = "0.09"
 --[[
 Changelog
 
@@ -16,10 +17,38 @@ v0.06 - Changed manual Q logic slightly. MAKE SURE YOU HOLD THE BUTTON FOR AIM.
 v0.07 - Added failsafes for enemy going out of range, should now cast if enemy goes back into range while Q is charging (if they were initially out of range)
 
 v0.08 - now will use E when killable and not wait for a reset.
+
+v0.09 - autoupdater
 ]]--
 
 
 if myHero.charName ~= "Vi" then return end
+local AUTOUPDATE = true
+local UPDATE_HOST = "raw.github.com"
+local UPDATE_PATH = "/Dienofail/BoL/master/common/SidasAutoCarryPlugin%20-%20Vi.lua".."?rand="..math.random(1,10000)
+local UPDATE_FILE_PATH = LIB_PATH.."SidasAutoCarryPlugin - Vi.lua"
+local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
+
+function AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>SAC VI:</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
+if AUTOUPDATE then
+	local ServerData = GetWebResult(UPDATE_HOST, UPDATE_PATH)
+	if ServerData then
+		local ServerVersion = string.match(ServerData, "local version = \"%d+.%d+\"")
+		ServerVersion = string.match(ServerVersion and ServerVersion or "", "%d+.%d+")
+		if ServerVersion then
+			ServerVersion = tonumber(ServerVersion)
+			if tonumber(version) < ServerVersion then
+				AutoupdaterMsg("New version available"..ServerVersion)
+				AutoupdaterMsg("Updating, please don't press F9")
+				DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () AutoupdaterMsg("Successfully updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end)	 
+			else
+				AutoupdaterMsg("You have got the latest version ("..ServerVersion..")")
+			end
+		end
+	else
+		AutoupdaterMsg("Error downloading version info")
+	end
+end
 require "Collision"
 require "VPrediction"
 
@@ -108,7 +137,7 @@ function PluginOnTick()
 
 	if Target and Menu.manualQ and ValidTarget(Target) and isPressedQ then
 		--print('Manual q part 2 getting called')
-		local CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, 0.483, 55, CurrentRange, qSpeed, myHero)
+		local CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, 0.483, 55, CurrentRange, qSpeed, myHero, false)
 		if GetDistance(CastPosition) < CurrentRange and HitChance > 0 then
 			CastSpellQ2(CastPosition.x, CastPosition.z)
 		end 
@@ -118,7 +147,7 @@ function PluginOnTick()
 	if Menu.CancelQ then
 		local CastPosition, HitChance, Position = nil
 		if ValidTarget(Target) then
-			CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, 0.483, 55, CurrentRange, qSpeed, myHero)
+			CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, 0.483, 55, CurrentRange, qSpeed, myHero, false)
 		end
 		if CastPosition ~= nil and GetDistance(CastPosition) < CurrentRange and ValidTarget(Target) then
 			CastSpellQ2(CastPosition.x, CastPosition.z)
@@ -272,7 +301,7 @@ function mainLoad()
 		SkillE = {spellKey = _E, range = 250, speed = math.huge, delay = 0, width = 0, configName = "ViE", displayName = "ViE", enabled = true, skillShot = false, minions = true, reset = true, reqTarget = true }
 	end
 	ignite = ((myHero:GetSpellData(SUMMONER_1).name:find("SummonerDot") and SUMMONER_1) or (myHero:GetSpellData(SUMMONER_2).name:find("SummonerDot") and SUMMONER_2) or nil)
-	PrintChat("Sidas Autocarry Vi Plugin by Dienofail loaded v0.08")
+	PrintChat("Sidas Autocarry Vi Plugin by Dienofail loaded v0.09")
 	if VIP_USER then 
 		AdvancedCallback:bind('OnGainBuff', function(unit, buff) OnGainBuff(unit, buff) end)
 	    AdvancedCallback:bind('OnLoseBuff', function(unit, buff) OnLoseBuff(unit, buff) end)
