@@ -1,4 +1,4 @@
-local version = "0.12"
+local version = "0.13"
 
 --[[
 
@@ -28,6 +28,10 @@ v0.10 -	Added toggle key for showing vision (default = u)
 	Added basic pink ward deletion while coming up with a better solution
 
 v0.11 - Improved pink ward deletion and added crosses (credit = mtmoon)
+
+v0.12 - Swapped to github
+
+v0.13 - Added toggle for crosses (fixes FPS issues hopefully). Default off
 
 --Credits
 
@@ -292,6 +296,7 @@ function OnLoad()
 	WardsHater:addParam("pinginterval", "Ping Enemy Jungler minimum time (s)", SCRIPT_PARAM_SLICE, 1, 69, 180, 0)
 	WardsHater:addParam("vangamode", "I THINK WARD IS HERE!", SCRIPT_PARAM_ONKEYDOWN, false, GetKey("F4"))
 	WardsHater:addParam("showvision", "Show Vision Key", SCRIPT_PARAM_ONKEYDOWN, false, GetKey("U"))
+	WardsHater:addParam("drawcross", "Draw crosses", SCRIPT_PARAM_ONOFF, false)
 	WardsHater:addParam("crosssize", "adj cross_size", SCRIPT_PARAM_SLICE, 35, 10, 100, 0)
 	WardsHater:addParam("crosswidth", "adj cross_width", SCRIPT_PARAM_SLICE, 10, 5, 50, 0)
 	WardsHater:addParam("txtsize", "adj Champ Text size", SCRIPT_PARAM_SLICE, 25, 5, 50, 0)
@@ -416,9 +421,11 @@ function OnDraw()
 						DrawLine3D(current_waypoints[current_index].x, myHero.y, current_waypoints[current_index].y, current_waypoints[current_index+1].x, myHero.y, current_waypoints[current_index+1].y, 2, ARGB(255, 255, 0, 0) )
 							if current_index == #current_waypoints-1 then
 								local endpoint = current_waypoints[current_index+1]
-								DrawText3D(champion.charName, current_waypoints[current_index+1].x+WardsHater.txtxpos, myHero.y, current_waypoints[current_index+1].y+WardsHater.txtypos, WardsHater.txtsize, ARGB(255, 255, 255, 0), true)
-								DrawLine3D(endpoint.x-WardsHater.crosssize, myHero.y, endpoint.y+WardsHater.crosssize, endpoint.x+WardsHater.crosssize, myHero.y, endpoint.y-WardsHater.crosssize, WardsHater.crosswidth, ARGB(255, 255, 0, 0) )
-								DrawLine3D(endpoint.x+WardsHater.crosssize, myHero.y, endpoint.y+WardsHater.crosssize, endpoint.x-WardsHater.crosssize, myHero.y, endpoint.y-WardsHater.crosssize, WardsHater.crosswidth, ARGB(255, 255, 0, 0) )
+								if WardsHater.drawcross then
+									DrawText3D(champion.charName, current_waypoints[current_index+1].x+WardsHater.txtxpos, myHero.y, current_waypoints[current_index+1].y+WardsHater.txtypos, WardsHater.txtsize, ARGB(255, 255, 255, 0), true)
+									DrawLine3D(endpoint.x-WardsHater.crosssize, myHero.y, endpoint.y+WardsHater.crosssize, endpoint.x+WardsHater.crosssize, myHero.y, endpoint.y-WardsHater.crosssize, WardsHater.crosswidth, ARGB(255, 255, 0, 0) )
+									DrawLine3D(endpoint.x+WardsHater.crosssize, myHero.y, endpoint.y+WardsHater.crosssize, endpoint.x-WardsHater.crosssize, myHero.y, endpoint.y-WardsHater.crosssize, WardsHater.crosswidth, ARGB(255, 255, 0, 0) )
+								end
 							end
 						if WardsHater.drawpathtime then
 							local current_time = GetDistance(current_waypoints[current_index], current_waypoints[current_index+1])/champion.ms
@@ -449,9 +456,11 @@ function OnDraw()
 						DrawLine3D(current_waypoints[current_index].x, myHero.y, current_waypoints[current_index].y, current_waypoints[current_index+1].x, myHero.y, current_waypoints[current_index+1].y, 2, ARGB(255, 0, 255, 0) )
 						if current_index == #current_waypoints-1 then
 								local endpoint = current_waypoints[current_index+1]
-								DrawText3D(champion.charName, current_waypoints[current_index+1].x+WardsHater.txtxpos, myHero.y, current_waypoints[current_index+1].y+WardsHater.txtypos, WardsHater.txtsize, ARGB(255, 255, 255, 0), true)
-								DrawLine3D(endpoint.x-WardsHater.crosssize, myHero.y, endpoint.y+WardsHater.crosssize, endpoint.x+WardsHater.crosssize, myHero.y, endpoint.y-WardsHater.crosssize, WardsHater.crosswidth, ARGB(255,0,255,0) )
-								DrawLine3D(endpoint.x+WardsHater.crosssize, myHero.y, endpoint.y+WardsHater.crosssize, endpoint.x-WardsHater.crosssize, myHero.y, endpoint.y-WardsHater.crosssize, WardsHater.crosswidth, ARGB(255,0,255,0) )
+								if WardsHater.drawcross then
+									DrawText3D(champion.charName, current_waypoints[current_index+1].x+WardsHater.txtxpos, myHero.y, current_waypoints[current_index+1].y+WardsHater.txtypos, WardsHater.txtsize, ARGB(255, 255, 255, 0), true)
+									DrawLine3D(endpoint.x-WardsHater.crosssize, myHero.y, endpoint.y+WardsHater.crosssize, endpoint.x+WardsHater.crosssize, myHero.y, endpoint.y-WardsHater.crosssize, WardsHater.crosswidth, ARGB(255,0,255,0) )
+									DrawLine3D(endpoint.x+WardsHater.crosssize, myHero.y, endpoint.y+WardsHater.crosssize, endpoint.x-WardsHater.crosssize, myHero.y, endpoint.y-WardsHater.crosssize, WardsHater.crosswidth, ARGB(255,0,255,0) )
+								end
 						end
 						if WardsHater.drawpathtime then
 							local current_time = GetDistance(current_waypoints[current_index], current_waypoints[current_index+1])/champion.ms

@@ -1,6 +1,6 @@
-local version = "0.13"
+local version = "0.14"
 --[[
-    I'M Aiming 0.12 by Klokje edited by Dienofail for VPrediction
+    I'M Aiming 0.14 by Klokje edited by Dienofail for VPrediction
     ========================================================================
     
     Change log:
@@ -28,6 +28,10 @@ local version = "0.13"
 	   - Will only cast Leesin Q and Thresh Q first cast now.
     0.12
        - Fixed auto-updater
+    0.13 
+       - Moved to github
+    0.14 
+       - Added 100% hitchance toggle (default off)
 
 ]]
 -- Globals ---------------------------------------------------------------------
@@ -317,10 +321,11 @@ function OnLoad()
 	end 
     Config:addParam("accuracy", "Accuracy Slider", SCRIPT_PARAM_SLICE, 1, 0, 5, 0)
     Config:addParam("rangeoffset", "Range Decrease Offset", SCRIPT_PARAM_SLICE, 0, 0, 200, 0)
+    Config:addParam("autocast", "Autocast on 100% hitchance", SCRIPT_PARAM_ONOFF, false)
     ts2.name = "ImAiming"
     Config:addTS(ts2)
     initDone = true
-	PrintChat(" >> I'M Aiming by Klokje edited by Dienofail VPrediction v0.08 loaded") -- messages generally are at the end :D
+	PrintChat(" >> I'M Aiming by Klokje edited by Dienofail VPrediction v0.14 loaded") -- messages generally are at the end :D
 end
 
 
@@ -329,11 +334,13 @@ function OnTick()
 	    Target = GetCustomTarget() --Tmrees
 	    if Target == nil then return end
 	    for i, spell in pairs(data) do
+            local collision = spell.minionCollisionWidth == 0 and false or true
+            local CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, spell.delay, spell.minionCollisionWidth, spell.range, spell.speed, myHero, collision)
 	        if Config[str[i]] and myHero:CanUseSpell(i) and IsLeeThresh() then -- move spell ready check to top
-	            local collision = spell.minionCollisionWidth == 0 and false or true
-				local CastPosition, HitChance, Position = VP:GetLineCastPosition(Target, spell.delay, spell.minionCollisionWidth, spell.range, spell.speed, myHero, collision)
-				if CastPosition and HitChance and HitChance >= Config.accuracy and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CastSpell(i, CastPosition.x, CastPosition.z) end   
-			end
+	            if CastPosition and HitChance and HitChance >= Config.accuracy and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CastSpell(i, CastPosition.x, CastPosition.z) end   
+			elseif Config.autocast then
+                if CastPosition and HitChance and HitChance > 2 and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CastSpell(i, CastPosition.x, CastPosition.z)
+            end
 		end 
 	end
 end 
