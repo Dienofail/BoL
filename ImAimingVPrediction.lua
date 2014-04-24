@@ -326,7 +326,7 @@ function OnLoad()
     ts2.name = "ImAiming"
     Config:addTS(ts2)
     initDone = true
-	PrintChat(" >> I'M Aiming by Klokje edited by Dienofail VPrediction v0.14 loaded") -- messages generally are at the end :D
+	PrintChat(" >> I'M Aiming by Klokje edited by Dienofail VPrediction v0.15 loaded") -- messages generally are at the end :D
 end
 
 
