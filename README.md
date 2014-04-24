@@ -1,6 +1,8 @@
 # Scripts for Bot of Legends, by dienofail
 
-Make sure to look into the common folder for SAC plugins. Most plugins will require VPrediction by Honda7: http://botoflegends.com/forum/topic/11076-library-vprediction/
+Make sure to look into the common folder for SAC plugins. Most scripts and plugins will require the latest VPrediction by Honda7: http://botoflegends.com/forum/topic/11076-library-vprediction/
+
+Please leave feedback (positive or negative!) as well as bug reports on the respective forum posts. 
 
 __Links to popular forum posts:__
 
