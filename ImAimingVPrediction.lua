@@ -1,6 +1,6 @@
-local version = "0.14"
+local version = "0.15"
 --[[
-    I'M Aiming 0.14 by Klokje edited by Dienofail for VPrediction
+    I'M Aiming 0.15 by Klokje edited by Dienofail for VPrediction
     ========================================================================
     
     Change log:
@@ -32,7 +32,8 @@ local version = "0.14"
        - Moved to github
     0.14 
        - Added 100% hitchance toggle (default off)
-
+    0.15 
+       - Typo fixes
 ]]
 -- Globals ---------------------------------------------------------------------
 require 'VPrediction'
@@ -339,7 +340,7 @@ function OnTick()
 	        if Config[str[i]] and myHero:CanUseSpell(i) and IsLeeThresh() then -- move spell ready check to top
 	            if CastPosition and HitChance and HitChance >= Config.accuracy and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CastSpell(i, CastPosition.x, CastPosition.z) end   
 			elseif Config.autocast then
-                if CastPosition and HitChance and HitChance > 2 and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CastSpell(i, CastPosition.x, CastPosition.z)
+                if CastPosition and HitChance and HitChance > 2 and GetDistance(CastPosition, myHero) < spell.range - Config.rangeoffset then CastSpell(i, CastPosition.x, CastPosition.z) end
             end
 		end 
 	end
