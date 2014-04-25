@@ -1,4 +1,4 @@
-local version = "0.08"
+local version = "0.09"
 --[[
 
 Free KogMaw!
@@ -20,6 +20,10 @@ v0.05 - Added killsteal. Fixed R collision some more. Added separate R stacks me
 v0.06 - Added separate mana managers for combo/harass per request. 
 
 v0.07 - Added minimum range slider for R
+
+v0.08 - Github
+
+v0.09 - Added auto ult on 100% hit
 
 ]]
 
@@ -139,6 +143,7 @@ function Menu()
 	Config.Extras:addParam("RStacks", "R Max Stacks", SCRIPT_PARAM_SLICE, 4, 1, 10, 0)
 	Config.Extras:addParam("RMinRange", "R Minimum Range", SCRIPT_PARAM_SLICE, 500, 0, 1800, 0)
 	Config.Extras:addParam("EGapClosers", "E Gap Closers", SCRIPT_PARAM_ONOFF, true)
+	Config.Extras:addParam("AutoUlt", "Auto Ult at 100% hitchance", SCRIPT_PARAM_ONOFF, true)
 
 	--Permashow
 	Config:permaShow("Combo")
@@ -179,6 +184,10 @@ function OnTick()
 
 		if Config.Extras.EGapClosers then
 			CheckDashes()
+		end
+
+		if Config.Extras.AutoUlt then
+			AutoUlt()
 		end
 		KillSteal()
 	end
@@ -258,6 +267,18 @@ function CastR(Target)
 	end
 end
 
+function AutoUlt()
+	local Enemies = GetEnemyHeroes()
+	for i, enemy in ipairs(Enemies) do
+		 if ValidTarget(enemy, 1800) and not enemy.dead and GetDistance(enemy) < 1800 then
+			local CastPosition, HitChance, Pos = VP:GetCircularCastPosition(enemy, SpellR.Delay, SpellR.Width, RRange, SpellR.Speed, myHero, false)
+			if HitChance > 2 and GetDistance(CastPosition) < RRange then
+				CastSpell(_R, CastPosition.x, CastPosition.z)
+			end
+		 end
+	end
+end
+
 function Farm()
 	if Config.FarmSub.useE then
 		FarmE()
@@ -280,6 +301,8 @@ function Reset()
 		return false
 	end
 end
+
+
 
 function KillSteal()
 	local Enemies = GetEnemyHeroes()
