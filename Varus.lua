@@ -1,4 +1,4 @@
-local version = "0.05"
+local version = "0.06"
 --[[
 
 Free Varus!
@@ -15,6 +15,9 @@ v0.03 - Bug fixes to E closest enemy. Changed default map for E closest enemy as
 
 v0.04 - small fixes
 
+v0.05 - Github
+
+v0.06 - fixes to Q stuck. Should get stuck far less often during combo (ditto on other modes)
 ]]
 if myHero.charName ~= "Varus" then return end
 require 'VPrediction'
@@ -497,6 +500,13 @@ function Cast2ndQTarget(Target)
 				_G.MMA_ResetAutoAttack()
 			end
 			--print('Move 3 to called at ' .. tostring(to_move_position))
+		elseif CurrentRange > GetDistance(Target) + 50 and CurrentRange > GetDistance(QCastPosition) + 50 and Qcasttime > Menu.qsettings.QMaxBuffer/4 then
+			Send2ndQPacket(QCastPosition.x, QCastPosition.z)
+			if SACloaded then 
+				MyHero:AttacksEnabled(true)
+			else
+				_G.MMA_ResetAutoAttack()
+			end
 		end
 	end
 end
