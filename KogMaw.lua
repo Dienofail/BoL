@@ -261,7 +261,7 @@ end
 function CastR(Target)
 	if RReady and Target ~= nil and ValidTarget(Target, 1800) then
 		local CastPosition, HitChance, Pos = VP:GetCircularCastPosition(Target, SpellR.Delay, SpellR.Width, RRange, SpellR.Speed, myHero, false)
-		if HitChance >= 2 and GetDistance(CastPosition) < RRange then
+		if HitChance >= 2 and GetDistance(CastPosition) < RRange and RStacks < Config.ComboSub.RStacks and not IsMyManaLowCombo() then
 			CastSpell(_R, CastPosition.x, CastPosition.z)
 		end
 	end
