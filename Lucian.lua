@@ -1,4 +1,4 @@
-local version = "0.09"
+local version = "1.00"
 --[[
 
 Free Lucian!
@@ -24,6 +24,9 @@ v0.07 - Further fixes to spellweave
 v0.08 - Github
 
 v0.09 - Moved minion update to Q function
+
+v1.00 - Fixed spellweaving logic a bit, fixed SAC compatibility, added killsteal, improved minion Q cast
+
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -148,15 +151,11 @@ function OnTick()
 		Check()
 		target = GetCustomTarget()
 		Qtarget = ts.target
-		if Config.Combo and target ~= nil then
-			Combo(target)
-		elseif  Config.Combo and Qtarget ~= nil then
+		if Config.Combo and Qtarget ~= nil then
 			Combo(Qtarget)
 		end
 
-		if Config.Harass and target ~= nil then
-			Harass(target)
-		elseif Config.Harass and Qtarget ~= nil then
+		if Config.Harass and Qtarget ~= nil then
 			Harass(Qtarget)
 		end
 
@@ -286,7 +285,7 @@ function GetEnemiesHitByQ(startpos, endpos)
 				local throwaway, HitChance, PredictedPos = VP:GetLineCastPosition(enemy, SpellQ.Delay, SpellQ.Width, SpellQ.ExtendedRange, SpellQ.Speed, myHero, false)
 				local pointSegment, pointLine, isOnSegment = VectorPointProjectionOnLineSegment(Vector(startpos), Vector(realendpos), Vector(PredictedPos))
 				local pointSegment3D = {x=pointSegment.x, y=enemy.y, z=pointSegment.y}
-				if isOnSegment and pointSegment3D ~= nil and GetDistance(pointSegment3D, PredictedPos) < VP:GetHitBox(enemy) + SpellQ.Width and HitChance >= 1 then
+				if isOnSegment and pointSegment3D ~= nil and GetDistance(pointSegment3D, PredictedPos) < VP:GetHitBox(enemy) + SpellQ.Width - 20 and HitChance >= 1 then
 					count = count + 1
 					if enemy.networkID == target.networkID then
 						HitMainTarget = true
@@ -357,15 +356,31 @@ function FindBestCastPosition(Target)
 	end
 end
 
+--Credit AWA
+
+function KillSteal()
+	local Enemies = GetEnemyHeroes()
+	for i, enemy in pairs(Enemies) do
+	if getDmg("Q", enemy, myHero)  > enemy.health and  Config.KS.useQ and GetDistance(enemy) < SpellQ.Range then
+			CastQ(enemy)
+		end
+	if getDmg("W", enemy, myHero)  > enemy.health and  Config.KS.useW and GetDistance(enemy) < SpellW.Range then
+			CastW(enemy)
+		end
+	end
+end
+
+
+
 function Reset(Target)
 	if GetDistance(Target) > 600 then
 		return true
 	elseif _G.MMA_Loaded and _G.MMA_NextAttackAvailability < 0.6 then
 		return true
 	elseif _G.AutoCarry and (_G.AutoCarry.shotFired or _G.AutoCarry.Orbwalker:IsAfterAttack()) then 
-		-- if Config.Extras.Debug then
-		-- 	print('SAC shot fired')
-		-- end
+		if Config.Extras.Debug then
+			print('SAC shot fired')
+		end
 		return true
 	else
 		return false
@@ -376,6 +391,8 @@ function OnDraw()
 	if Config.Extras.Debug and Qtarget ~= nil then
 		DrawText3D("Current IsPressedR status is " .. tostring(isPressedR), myHero.x+200, myHero.y, myHero.z+200, 25,  ARGB(255,255,0,0), true)
 		DrawText3D("Current isBuffed status is " .. tostring(isBuffed), myHero.x, myHero.y, myHero.z, 25,  ARGB(255,255,0,0), true)
+		DrawText3D("Current isReset status is " .. tostring(Reset(Qtarget)), myHero.x-100, myHero.y, myHero.z-100, 25,  ARGB(255,255,0,0), true)
+		DrawText3D("Current ShouldCast status is " .. tostring(ShouldCast(Qtarget)), myHero.x-150, myHero.y, myHero.z-159, 25,  ARGB(255,255,0,0), true)
 		DrawCircle3D(Qtarget.x, Qtarget.y, Qtarget.z, 150, 1,  ARGB(255, 0, 255, 255))
 	end
 
@@ -451,7 +468,7 @@ function OnProcessSpell(unit, spell)
 end
 
 function ShouldCast(Target)
-	if GetTickCount() - LastSpellCast > 450 and not isBuffed and Reset(Target) then
+	if GetTickCount() - LastSpellCast > 350 and not isBuffed and Reset(Target) then
 		return true
 	else
 		return false
