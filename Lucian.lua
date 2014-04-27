@@ -1,4 +1,4 @@
-local version = "1.00"
+local version = "1.01"
 --[[
 
 Free Lucian!
@@ -26,6 +26,8 @@ v0.08 - Github
 v0.09 - Moved minion update to Q function
 
 v1.00 - Fixed spellweaving logic a bit, fixed SAC compatibility, added killsteal, improved minion Q cast
+
+v1.01 - Futher fixes to spellweaving
 
 ]]
 
@@ -393,6 +395,7 @@ function OnDraw()
 		DrawText3D("Current isBuffed status is " .. tostring(isBuffed), myHero.x, myHero.y, myHero.z, 25,  ARGB(255,255,0,0), true)
 		DrawText3D("Current isReset status is " .. tostring(Reset(Qtarget)), myHero.x-100, myHero.y, myHero.z-100, 25,  ARGB(255,255,0,0), true)
 		DrawText3D("Current ShouldCast status is " .. tostring(ShouldCast(Qtarget)), myHero.x-150, myHero.y, myHero.z-159, 25,  ARGB(255,255,0,0), true)
+		DrawText3D("Current time since last cast is " .. tostring(GetTickCount() - LastSpellCast), myHero.x-250, myHero.y, myHero.z-259, 25,  ARGB(255,255,0,0), true)
 		DrawCircle3D(Qtarget.x, Qtarget.y, Qtarget.z, 150, 1,  ARGB(255, 0, 255, 255))
 	end
 
@@ -468,7 +471,7 @@ function OnProcessSpell(unit, spell)
 end
 
 function ShouldCast(Target)
-	if GetTickCount() - LastSpellCast > 350 and not isBuffed and Reset(Target) then
+	if not isBuffed and Reset(Target) then
 		return true
 	else
 		return false
