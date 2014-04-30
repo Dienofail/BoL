@@ -1,4 +1,4 @@
-local version = "1.01"
+local version = "1.02"
 --[[
 
 Free Lucian!
@@ -29,6 +29,7 @@ v1.00 - Fixed spellweaving logic a bit, fixed SAC compatibility, added killsteal
 
 v1.01 - Futher fixes to spellweaving
 
+v1.02 - Added mana manager
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -133,10 +134,19 @@ function Menu()
 	Config.Extras:addParam("ESlows", "E Slows", SCRIPT_PARAM_ONOFF, true)
 	Config.Extras:addParam("CheckQ", "Check Q Using Minions", SCRIPT_PARAM_ONOFF, true)
 	Config.Extras:addParam("AoEQ", "Check AoE Q", SCRIPT_PARAM_ONOFF, true)
+	Config.Extras:addParam("mManager", "Mana Slider", SCRIPT_PARAM_SLICE, 0, 0, 100, 0)
 	--Permashow
 	Config:permaShow("Combo")
 	Config:permaShow("Farm")
 	Config:permaShow("Harass")
+end
+
+function IsMyManaLow()
+    if myHero.mana < (myHero.maxMana * ( Config.Extras.mManager / 100)) then
+        return true
+    else
+        return false
+    end
 end
 
 --Credit Trees
@@ -179,14 +189,14 @@ end
 
 
 function Combo(Target)
-	if QReady and Config.ComboSub.useQ then
+	if QReady and Config.ComboSub.useQ and not IsMyManaLow() then
 		-- if Config.Extras.Debug then
 		-- 	print('Cast Q called')
 		-- end	
 		CastQ(Target)
 	end
 
-	if WReady and Config.ComboSub.useW then
+	if WReady and Config.ComboSub.useW and not IsMyManaLow() then
 		CastW(Target)
 	end
 
@@ -197,11 +207,11 @@ end
 
 
 function Harass(Target)
-	if QReady and Config.HarassSub.useQ then
+	if QReady and Config.HarassSub.useQ and not IsMyManaLow() then
 		CastQ(Target)
 	end
 
-	if WReady and Config.HarassSub.useW then
+	if WReady and Config.HarassSub.useW and not IsMyManaLow() then
 		CastW(Target)
 	end
 end
