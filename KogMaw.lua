@@ -1,4 +1,4 @@
-local version = "0.09"
+local version = "0.10"
 --[[
 
 Free KogMaw!
@@ -25,6 +25,7 @@ v0.08 - Github
 
 v0.09 - Added auto ult on 100% hit
 
+v0.10 - Corrected ult values - credit to acomma for helping me find better values!
 ]]
 
 if myHero.charName ~= "KogMaw" then return end
@@ -69,8 +70,8 @@ local VP = VPrediction()
 local SpellQ = {Speed = 1550, Range = 925, Delay = 0.3667, Width = 60}
 local SpellW = {Speed = 1600, Range = 1000, Delay = 0.111, Width = 55}
 local SpellE = {Speed = 1400, Range = 1280, Delay = 0.066, Width = 120}
-local SpellR = {Width = 30, Speed = 2000, Delay= 0.450}
-local RRangeTable = {1200, 1500, 1800}
+local SpellR = {Width = 10, Speed = math.huge, Delay= 0.8}
+local RRangeTable = {1400, 1700, 2200}
 local WRange, RRange = nil, nil 
 local QReady, WReady, EReady, RReady = nil, nil, nil, nil 
 local RStacks = 0
@@ -82,7 +83,7 @@ end
 
 function Init()
 	ts = TargetSelector(TARGET_LESS_CAST_PRIORITY, 1300, DAMAGE_PHYSICAL)
-	ts2 = TargetSelector(TARGET_LESS_CAST_PRIORITY, 1800, DAMAGE_PHYSICAL)
+	ts2 = TargetSelector(TARGET_LESS_CAST_PRIORITY, 2200, DAMAGE_PHYSICAL)
 	ts.name = "Ranged Main"
 	ts2.name = "R target selector"
 	Config:addTS(ts)
