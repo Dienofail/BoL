@@ -1,4 +1,4 @@
-local version = "1.02"
+local version = "1.03"
 --[[
 
 Free Lucian!
@@ -30,6 +30,8 @@ v1.00 - Fixed spellweaving logic a bit, fixed SAC compatibility, added killsteal
 v1.01 - Futher fixes to spellweaving
 
 v1.02 - Added mana manager
+
+v1.03 - Sepearated mana manager for harass and combo
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -119,9 +121,11 @@ function Menu()
 	Config.ComboSub:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
 	Config.ComboSub:addParam("useW", "Use W", SCRIPT_PARAM_ONOFF, true)
 	Config.ComboSub:addParam("lockR", "Lock on R (not functional)", SCRIPT_PARAM_ONOFF, true)
+	Config.ComboSub:addParam("mManager", "Mana Slider", SCRIPT_PARAM_SLICE, 0, 0, 100, 0)
 	--Harass
 	Config.HarassSub:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
 	Config.HarassSub:addParam("useW", "Use W", SCRIPT_PARAM_ONOFF, false)
+	Config.HarassSub:addParam("mManager", "Mana Slider", SCRIPT_PARAM_SLICE, 0, 0, 100, 0)
 	--Farm
 	Config.FarmSub:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
 	Config.FarmSub:addParam("useW", "Use W", SCRIPT_PARAM_ONOFF, true)
@@ -134,7 +138,6 @@ function Menu()
 	Config.Extras:addParam("ESlows", "E Slows", SCRIPT_PARAM_ONOFF, true)
 	Config.Extras:addParam("CheckQ", "Check Q Using Minions", SCRIPT_PARAM_ONOFF, true)
 	Config.Extras:addParam("AoEQ", "Check AoE Q", SCRIPT_PARAM_ONOFF, true)
-	Config.Extras:addParam("mManager", "Mana Slider", SCRIPT_PARAM_SLICE, 0, 0, 100, 0)
 	--Permashow
 	Config:permaShow("Combo")
 	Config:permaShow("Farm")
@@ -142,7 +145,15 @@ function Menu()
 end
 
 function IsMyManaLow()
-    if myHero.mana < (myHero.maxMana * ( Config.Extras.mManager / 100)) then
+    if myHero.mana < (myHero.maxMana * ( Config.ComboSub.mManager / 100)) then
+        return true
+    else
+        return false
+    end
+end
+
+function IsMyManaLowHarass()
+    if myHero.mana < (myHero.maxMana * ( Config.HarassSub.mManager / 100)) then
         return true
     else
         return false
@@ -207,11 +218,11 @@ end
 
 
 function Harass(Target)
-	if QReady and Config.HarassSub.useQ and not IsMyManaLow() then
+	if QReady and Config.HarassSub.useQ and not IsMyManaLowHarass() then
 		CastQ(Target)
 	end
 
-	if WReady and Config.HarassSub.useW and not IsMyManaLow() then
+	if WReady and Config.HarassSub.useW and not IsMyManaLowHarass() then
 		CastW(Target)
 	end
 end
