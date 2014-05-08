@@ -367,7 +367,7 @@ function CheckImmobile()
 	local Enemies = GetEnemyHeroes()
 	for idx, enemy in ipairs(Enemies) do
 		if not enemy.dead and ValidTarget(enemy) and GetDistance(enemy) < SpellW.Range and Config.Extras.EStun then
-			local IsImmobile, pos = VP:IsImmobile(enemy, 0.575, SpellE.Width, SpellW.Speed, myHero)
+			local IsImmobile, pos = VP:IsImmobile(enemy, 0.605, SpellE.Width, SpellW.Speed, myHero)
 			if IsImmobile and GetDistance(pos) < SpellE.Range and EReady then
 				CastSpell(_E, pos.x, pos.z)
 			end
