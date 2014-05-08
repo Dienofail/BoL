@@ -1,4 +1,4 @@
-local version = "0.04"
+local version = "0.05"
 --[[
 
 Perfect Lulu,
@@ -13,6 +13,9 @@ v0.02 - changes to autoupdater
 
 v0.03 - some fixes to pix detection. 
 
+v0.04 - Github
+
+v0.05 - added tick manager for update object - should be experiencing reduced lag
 ]]
 
 
@@ -80,6 +83,7 @@ local velocity_TO = 10
 local CONVERSATION_FACTOR = 975
 local MS_MIN = 500
 local MS_MEDIUM = 750
+local last_pix_time = 0
 --End Vadash Credit
 
 --Toy
@@ -919,11 +923,14 @@ end
 
 
 function ProcessPix()
-	for i=1, objManager.iCount do
-		local object = objManager:getObject(i)
-		if object ~= nil and object.name:lower():find("lulu_faerie_idle") and object.valid and object.team == myHero.team then 
-			--print(object.name)
-			Pix = object
+	if GetTickCount - last_pix_time > 100 then
+		for i=1, objManager.iCount do
+			local object = objManager:getObject(i)
+			if object ~= nil and object.name:lower():find("lulu_faerie_idle") and object.valid and object.team == myHero.team then 
+				--print(object.name)
+				Pix = object
+				last_pix_time = GetTickCount()
+			end
 		end
 	end
 end
