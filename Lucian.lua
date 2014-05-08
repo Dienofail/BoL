@@ -52,6 +52,7 @@ require 'VPrediction'
 --Honda7
 local AUTOUPDATE= true
 local UPDATE_SCRIPT_NAME = "Lucian"
+local UPDATE_NAME = "Lucian"
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/Dienofail/BoL/master/Lucian.lua".."?rand="..math.random(1,10000)
 local UPDATE_FILE_PATH = SCRIPT_PATH..GetCurrentEnv().FILE_NAME
