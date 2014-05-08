@@ -1,3 +1,4 @@
+local version = "0.02"
 --[[Based: By Biggest Butt NA (boboben1)]]--
 --[[Inspired By Based On a True Story]]--
 --[[Completely Rewritten by Biggest Butt NA (boboben1)]]--
@@ -7,6 +8,8 @@ Changelog
 
 v0.01 - release
 
+v0.02 - removed chat
+
 Description
 
 Uses global ults on recalling enemies: supports draven, jinx, ashe, ezreal 
@@ -14,9 +17,6 @@ Uses global ults on recalling enemies: supports draven, jinx, ashe, ezreal
 All credit to original writers; I'm responsible for updating with jinx/draven and plugging in autoupdater
 
 ]]--
-
-
-local version = "0.01"
 local AUTOUPDATE = true
 local UPDATE_SCRIPT_NAME = "TrueStory"
 local UPDATE_NAME = "TrueStory"
@@ -127,9 +127,9 @@ function OnTick()
 		else
 			hittime = GetJinxHitTime()
 		end
-		PrintChat("HitTime ".. hittime)
+		--PrintChat("HitTime ".. hittime)
 		if hittime >= TargetData.RecallTime and hittime < TargetData.RecallTime + 30 and player:CanUseSpell(_R) == READY then
-			PrintChat("FIRE")
+			--PrintChat("FIRE")
 			CastSpell(_R, BaseLoc.x, BaseLoc.z)
 			for i, k in pairs(TargetData) do
 				TargetData[i] = nil
@@ -184,8 +184,8 @@ function OnRecall(hero, channelTimeInMs)    -- gets triggered when somebody star
 		if getDmg("R", hero, player) > hero.health and TargetData.Target == nil then
 			TargetData.Target = hero
 			TargetData.Time = GetTickCount()
-			TargetData.RecallTime = channelTimeInMs+500
-			TargetData.RecallTimeStatic = channelTimeInMs+500
+			TargetData.RecallTime = channelTimeInMs+450
+			TargetData.RecallTimeStatic = channelTimeInMs+450
 			DrawData.prevTick = GetTickCount()
 			DrawData.Time = 1000
 			PrintChat("Queued")
