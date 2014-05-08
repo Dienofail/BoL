@@ -1,4 +1,4 @@
-local version = "1.07"
+local version = "1.08"
 --[[
 
 Free Jinx!
@@ -50,6 +50,8 @@ v1.06 - Fixes to bugs in Q swapping introduced in v1.05
 
 v1.07 - Added mana manager and increased activation delay for auto E
 
+v1.08 - Adjusted W issues. 
+
 ]]
 
 if myHero.charName ~= "Jinx" then return end
@@ -90,7 +92,7 @@ end
 local Config = nil
 local VP = VPrediction()
 local Col = Collision(3000, 1700, 0.316, 140)
-local SpellW = {Speed = 2000, Range = 1450, Delay = 0.066 + 0.251, Width = 60}
+local SpellW = {Speed = 3300, Range = 1500, Delay = 0.600, Width = 60}
 local SpellE = {Speed = 1750, Delay = 0.5 + 0.2658, Range = 900, Width = 120}
 local SpellR = {Speed = 1700, Delay = 0.066 + 0.250, Range = 25750, Width = 140}
 local QReady, WReady, EReady, RReady = nil, nil, nil, nil 
