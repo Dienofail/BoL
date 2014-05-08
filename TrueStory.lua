@@ -1,4 +1,4 @@
-local version = "0.02"
+local version = "0.03"
 --[[Based: By Biggest Butt NA (boboben1)]]--
 --[[Inspired By Based On a True Story]]--
 --[[Completely Rewritten by Biggest Butt NA (boboben1)]]--
