@@ -1,4 +1,4 @@
-local version = "0.04"
+local version = "0.05"
 --[[Based: By Biggest Butt NA (boboben1)]]--
 --[[Inspired By Based On a True Story]]--
 --[[Completely Rewritten by Biggest Butt NA (boboben1)]]--
@@ -109,7 +109,7 @@ end
 function OnLoad()
 	BasedConfig = scriptConfig("Based!", "Based2.0")
 	BasedConfig:addParam("enabled", "Enable", SCRIPT_PARAM_ONOFF, true)
-	
+	BasedConfig:addParam("slider", "Delay Slider (ms)", SCRIPT_PARAM_SLICE, 1500, 0, 5000, 0)
 	SpellData = Champions[player.charName]
 	local map = GetGame().map.index
 	BaseLoc = map == 1 and BaseSpots1[GetEnemyTeam()] or BaseSpots[GetEnemyTeam()]
@@ -184,8 +184,8 @@ function OnRecall(hero, channelTimeInMs)    -- gets triggered when somebody star
 		if getDmg("R", hero, player) > hero.health and TargetData.Target == nil then
 			TargetData.Target = hero
 			TargetData.Time = GetTickCount()
-			TargetData.RecallTime = channelTimeInMs + 1500
-			TargetData.RecallTimeStatic = channelTimeInMs + 1500
+			TargetData.RecallTime = channelTimeInMs + BasedConfig.slider
+			TargetData.RecallTimeStatic = channelTimeInMs + BasedConfig.slider
 			DrawData.prevTick = GetTickCount()
 			DrawData.Time = 1000
 			--PrintChat("Queued")
