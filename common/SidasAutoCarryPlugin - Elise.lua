@@ -1,4 +1,4 @@
-local version = "0.07"
+local version = "0.08"
 --[[
 
 
@@ -26,6 +26,8 @@ v0.05 - Fixes for v81 reborn
 v0.06 - Github
 
 v0.07 - Changed default jump distance
+
+v0.08 - fixes to rappel
 ]]--
 require "Prodiction"
 require "Collision"
@@ -278,27 +280,6 @@ function PluginOnTick()
 			CastSpiderE(closestmob, 1, 0)
 		end
 	end
-
-	--Mancus
-    if AutoCarry.PluginMenu.RappelGapClosers or AutoCarry.PluginMenu.RappelDangerous then
-        if not spellExpired and (GetTickCount() - informationTable.spellCastedTick) <= (informationTable.spellRange/informationTable.spellSpeed)*1000 then
-            local spellDirection     = (informationTable.spellEndPos - informationTable.spellStartPos):normalized()
-            local spellStartPosition = informationTable.spellStartPos + spellDirection
-            local spellEndPosition   = informationTable.spellStartPos + spellDirection * informationTable.spellRange
-            local heroPosition = Point(myHero.x, myHero.z)
-
-            local lineSegment = LineSegment(Point(spellStartPosition.x, spellStartPosition.y), Point(spellEndPosition.x, spellEndPosition.y))
-            --lineSegment:draw(ARGB(255, 0, 255, 0), 70)
-
-            if lineSegment:distance(heroPosition) <= 200 and SpiderEready and isSpider then
-            	--print('Dodging dangerous spell with E')
-                CastSpell(_E)
-            end
-        else
-            spellExpired = true
-            informationTable = {}
-        end
-    end
 end
 
 function Combo()
@@ -692,7 +673,7 @@ function PluginOnProcessSpell(unit, spell)
 		['Vi'] = {true, spell = _R, range = 800, projSpeed = math.huge},
 		['Yasuo'] = {true, spell = _R, range = 800, projSpeed = math.huge},
 		}
-	    if unit.type == 'obj_AI_Hero' and unit.team == TEAM_ENEMY and DangerousSpellList[unit.charName] and GetDistance(unit) < 2000 and spell ~= nil then
+	    if unit.type == 'obj_AI_Hero' and unit.team ~= myHero.team and DangerousSpellList[unit.charName] and GetDistance(unit) < 2000 and spell ~= nil then
 	        if spell.name == (type(DangerousSpellList[unit.charName].spell) == 'number' and unit:GetSpellData(DangerousSpellList[unit.charName].spell).name or DangerousSpellList[unit.charName].spell) then
 	            if spell.target ~= nil and spell.target.name == myHero.name then
 					----print('Gapcloser: ',unit.charName, ' Target: ', (spell.target ~= nil and spell.target.name or 'NONE'), " ", spell.name, " ", spell.projectileID)
