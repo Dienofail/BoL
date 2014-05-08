@@ -1,4 +1,4 @@
-local version = "0.07"
+local version = "0.08"
 --[[
 
 Perfect Lulu,
@@ -21,6 +21,7 @@ v0.06 - bug fixes
 
 v0.07 - bug fixes
 
+v0.08 - more responsive pix farm/cast
 ]]
 
 
@@ -928,7 +929,7 @@ end
 
 
 function ProcessPix()
-	if GetTickCount() - last_pix_time > 100 then
+	if GetTickCount() - last_pix_time > 40 then
 		for i=1, objManager.iCount do
 			local object = objManager:getObject(i)
 			if object ~= nil and object.name:lower():find("lulu_faerie_idle") and object.valid and object.team == myHero.team then 
