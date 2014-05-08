@@ -1,4 +1,4 @@
-local version = "1.04"
+local version = "1.05"
 --[[
 
 Free Lucian!
@@ -34,6 +34,8 @@ v1.02 - Added mana manager
 v1.03 - Sepearated mana manager for harass and combo
 
 v1.04 - Rewrote all of spellweave
+
+v1.05 - Changed minion collision for Q a bit
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -340,7 +342,7 @@ function GetEnemiesHitByQ(startpos, endpos)
 				local throwaway, HitChance, PredictedPos = VP:GetLineCastPosition(enemy, SpellQ.Delay, SpellQ.Width, SpellQ.ExtendedRange, SpellQ.Speed, myHero, false)
 				local pointSegment, pointLine, isOnSegment = VectorPointProjectionOnLineSegment(Vector(startpos), Vector(realendpos), Vector(PredictedPos))
 				local pointSegment3D = {x=pointSegment.x, y=enemy.y, z=pointSegment.y}
-				if isOnSegment and pointSegment3D ~= nil and GetDistance(pointSegment3D, PredictedPos) < VP:GetHitBox(enemy) + SpellQ.Width - 20 and HitChance >= 1 then
+				if isOnSegment and pointSegment3D ~= nil and GetDistance(pointSegment3D, PredictedPos) < VP:GetHitBox(enemy) + SpellQ.Width - 30 and HitChance >= 2 then
 					count = count + 1
 					if enemy.networkID == target.networkID then
 						HitMainTarget = true
