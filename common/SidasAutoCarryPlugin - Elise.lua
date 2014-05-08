@@ -1,4 +1,4 @@
-local version = "0.05"
+local version = "0.07"
 --[[
 
 
@@ -20,7 +20,12 @@ v0.02a - Added packets for human E.
 v0.03 - Added VPrediction for human E, added auto updater. 
 
 v0.04 - added vprediction requirement
-v0.04 - Fixes for v81 reborn
+
+v0.05 - Fixes for v81 reborn
+
+v0.06 - Github
+
+v0.07 - Changed default jump distance
 ]]--
 require "Prodiction"
 require "Collision"
@@ -178,7 +183,7 @@ function PluginOnLoad()
 	AutoCarry.PluginMenu:addParam("HumanERequirement", "Use Human E before swapping", SCRIPT_PARAM_ONOFF, true)
 	AutoCarry.PluginMenu:addParam("HumanEHitchance", "Human E Hitchance", SCRIPT_PARAM_SLICE , 0.5, 0, 1, 10)
 	AutoCarry.PluginMenu:addParam("UseSpiderECombo", "Use Spider E in AutoCarry", SCRIPT_PARAM_ONOFF, true)
-	AutoCarry.PluginMenu:addParam("EGapCloseDistance", "Spider E minimum distance", SCRIPT_PARAM_SLICE, 600, 0, 1100, 0)
+	AutoCarry.PluginMenu:addParam("EGapCloseDistance", "Spider E minimum distance", SCRIPT_PARAM_SLICE, 800, 0, 1100, 0)
 	AutoCarry.PluginMenu:addParam("SmartKS", "Smart KillSteal", SCRIPT_PARAM_ONOFF, true)
 	AutoCarry.PluginMenu:addParam("SwapFormKS", "Swap form in Smart KillSteal", SCRIPT_PARAM_ONOFF, true)
 	AutoCarry.PluginMenu:addParam("QSmite", "Use QSmite on Big Camps", SCRIPT_PARAM_ONKEYTOGGLE, (SmiteSlot ~= nil), 78)
