@@ -1,4 +1,4 @@
-local version = "1.06"
+local version = "1.07"
 --[[
 
 Free Lucian!
@@ -38,6 +38,8 @@ v1.04 - Rewrote all of spellweave
 v1.05 - Changed minion collision for Q a bit
 
 v1.06 - Minor fixes to Q farm
+
+v1.07 - Minor fixes to Q target selection
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -304,12 +306,12 @@ function OnAnimation(unit, animation)
 		if Config.Extras.Debug then
 			print('Attack Animation')
 		end		
-		if (Config.Combo or Config.Harass) and ((Config.ComboSub.useQ or Config.HarassSub.useQ) and QReady) and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) and not IsMyManaLow() then
+		if (Config.Combo or Config.Harass) and ((Config.ComboSub.useQ or Config.HarassSub.useQ) and QReady) and target.type == myHero.type and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) and not IsMyManaLow() then
 			CastQ(target)
 			if Config.Extras.Debug then
 				print('QChained')
 			end
-		elseif (Config.Combo or Config.Harass) and ((Config.ComboSub.useW or Config.HarassSub.useW) and WReady) and not QReady and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) and not IsMyManaLow() then
+		elseif (Config.Combo or Config.Harass) and ((Config.ComboSub.useW or Config.HarassSub.useW) and WReady) and target.type == myHero.type and not QReady and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) and not IsMyManaLow() then
 			CastW(target)
 			if Config.Extras.Debug then
 				print('WChained')
