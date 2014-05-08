@@ -188,7 +188,7 @@ function OnRecall(hero, channelTimeInMs)    -- gets triggered when somebody star
 			TargetData.RecallTimeStatic = channelTimeInMs+450
 			DrawData.prevTick = GetTickCount()
 			DrawData.Time = 1000
-			PrintChat("Queued")
+			--PrintChat("Queued")
 		end
     end
 end
