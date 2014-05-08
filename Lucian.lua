@@ -1,4 +1,4 @@
-local version = "1.07"
+local version = "1.08"
 --[[
 
 Free Lucian!
@@ -40,6 +40,8 @@ v1.05 - Changed minion collision for Q a bit
 v1.06 - Minor fixes to Q farm
 
 v1.07 - Minor fixes to Q target selection
+
+v1.08 - Fixes to aa canceling
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -92,8 +94,10 @@ local isBuffed = false
 local LastSpellCast = 0
 local isPressedR = false
 local target = nil
-
-
+local lastAttack = 0
+local lastWindUpTime = 0
+local lastAttackCD = 0
+local animation_time = 0
 function OnLoad()
 	Menu()
 	Init()
@@ -302,17 +306,18 @@ function CastW(Target)
 end
 
 function OnAnimation(unit, animation)
-	if unit.isMe and animation:lower():find("attack") then
+	if unit.isMe and animation:lower():find("attack") and target ~= nil then
 		if Config.Extras.Debug then
-			print('Attack Animation')
+			print(animation)
 		end		
 		if (Config.Combo or Config.Harass) and ((Config.ComboSub.useQ or Config.HarassSub.useQ) and QReady) and target.type == myHero.type and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) and not IsMyManaLow() then
-			CastQ(target)
+			
+			DelayAction(function() CastQ(target) end, animation_time + 0.01)
 			if Config.Extras.Debug then
 				print('QChained')
 			end
 		elseif (Config.Combo or Config.Harass) and ((Config.ComboSub.useW or Config.HarassSub.useW) and WReady) and target.type == myHero.type and not QReady and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) and not IsMyManaLow() then
-			CastW(target)
+			DelayAction(function() CastW(target) end, animation_time + 0.01)
 			if Config.Extras.Debug then
 				print('WChained')
 			end
@@ -454,7 +459,7 @@ function OnDraw()
 		DrawText3D("Current isBuffed status is " .. tostring(isBuffed), myHero.x, myHero.y, myHero.z, 25,  ARGB(255,255,0,0), true)
 		DrawText3D("Current isReset status is " .. tostring(Reset(Qtarget)), myHero.x-100, myHero.y, myHero.z-100, 25,  ARGB(255,255,0,0), true)
 		DrawText3D("Current ShouldCast status is " .. tostring(ShouldCast(Qtarget)), myHero.x-150, myHero.y, myHero.z-159, 25,  ARGB(255,255,0,0), true)
-		DrawText3D("Current time since last cast is " .. tostring(GetTickCount() - LastSpellCast), myHero.x-250, myHero.y, myHero.z-259, 25,  ARGB(255,255,0,0), true)
+		DrawText3D("Current time since last cast is " .. tostring(animation_time), myHero.x-250, myHero.y, myHero.z-259, 25,  ARGB(255,255,0,0), true)
 		DrawCircle3D(Qtarget.x, Qtarget.y, Qtarget.z, 150, 1,  ARGB(255, 0, 255, 255))
 	end
 
@@ -509,6 +514,15 @@ function OrbwalkToPosition(position)
 end
 
 function OnProcessSpell(unit, spell)
+    if unit == myHero then
+        if spell.name:lower():find("attack") then
+            lastAttack = GetTickCount() - GetLatency()/2
+            lastWindUpTime = spell.windUpTime*1000
+            lastAttackCD = spell.animationTime*1000
+            animation_time = spell.windUpTime
+
+        end
+    end
 	if unit.isMe and spell.name == 'LucianQ' then
 		LastSpellCast = GetTickCount()
 	end
