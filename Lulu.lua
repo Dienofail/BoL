@@ -1,4 +1,4 @@
-local version = "0.05"
+local version = "0.07"
 --[[
 
 Perfect Lulu,
@@ -16,6 +16,11 @@ v0.03 - some fixes to pix detection.
 v0.04 - Github
 
 v0.05 - added tick manager for update object - should be experiencing reduced lag
+
+v0.06 - bug fixes
+
+v0.07 - bug fixes
+
 ]]
 
 
@@ -923,7 +928,7 @@ end
 
 
 function ProcessPix()
-	if GetTickCount - last_pix_time > 100 then
+	if GetTickCount() - last_pix_time > 100 then
 		for i=1, objManager.iCount do
 			local object = objManager:getObject(i)
 			if object ~= nil and object.name:lower():find("lulu_faerie_idle") and object.valid and object.team == myHero.team then 
