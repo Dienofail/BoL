@@ -1,4 +1,4 @@
-local version = "1.05"
+local version = "1.06"
 --[[
 
 Free Lucian!
@@ -36,6 +36,8 @@ v1.03 - Sepearated mana manager for harass and combo
 v1.04 - Rewrote all of spellweave
 
 v1.05 - Changed minion collision for Q a bit
+
+v1.06 - Minor fixes to Q farm
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -574,7 +576,7 @@ function countminionshitQ(pos)
 	for i, minion in ipairs(EnemyMinions.objects) do
 		local MinionPointSegment, MinionPointLine, MinionIsOnSegment =  VectorPointProjectionOnLineSegment(Vector(myHero), Vector(ExtendedVector), Vector(minion)) 
 		local MinionPointSegment3D = {x=MinionPointSegment.x, y=pos.y, z=MinionPointSegment.y}
-		if MinionIsOnSegment and GetDistance(MinionPointSegment3D, pos) < SpellQ.Width then
+		if MinionIsOnSegment and GetDistance(MinionPointSegment3D, pos) < SpellQ.Width + 30 then
 			n = n +1
 			-- if Config.Extras.Debug then
 			-- 	print('count minions W returend ' .. tostring(n))
