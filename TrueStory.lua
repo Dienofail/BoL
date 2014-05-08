@@ -1,4 +1,4 @@
-local version = "0.03"
+local version = "0.04"
 --[[Based: By Biggest Butt NA (boboben1)]]--
 --[[Inspired By Based On a True Story]]--
 --[[Completely Rewritten by Biggest Butt NA (boboben1)]]--
@@ -184,8 +184,8 @@ function OnRecall(hero, channelTimeInMs)    -- gets triggered when somebody star
 		if getDmg("R", hero, player) > hero.health and TargetData.Target == nil then
 			TargetData.Target = hero
 			TargetData.Time = GetTickCount()
-			TargetData.RecallTime = channelTimeInMs
-			TargetData.RecallTimeStatic = channelTimeInMs
+			TargetData.RecallTime = channelTimeInMs + 1500
+			TargetData.RecallTimeStatic = channelTimeInMs + 1500
 			DrawData.prevTick = GetTickCount()
 			DrawData.Time = 1000
 			--PrintChat("Queued")
