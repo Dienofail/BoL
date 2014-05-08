@@ -1,4 +1,4 @@
-local version = "1.03"
+local version = "1.04"
 --[[
 
 Free Lucian!
@@ -32,6 +32,8 @@ v1.01 - Futher fixes to spellweaving
 v1.02 - Added mana manager
 
 v1.03 - Sepearated mana manager for harass and combo
+
+v1.04 - Rewrote all of spellweave
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -84,6 +86,7 @@ local isBuffed = false
 local LastSpellCast = 0
 local isPressedR = false
 local target = nil
+
 
 function OnLoad()
 	Menu()
@@ -200,14 +203,14 @@ end
 
 
 function Combo(Target)
-	if QReady and Config.ComboSub.useQ and not IsMyManaLow() then
+	if QReady and Config.ComboSub.useQ and not IsMyManaLow() and GetDistance(Target) > 580 + VP:GetHitBox(Target) then
 		-- if Config.Extras.Debug then
 		-- 	print('Cast Q called')
 		-- end	
 		CastQ(Target)
 	end
 
-	if WReady and Config.ComboSub.useW and not IsMyManaLow() then
+	if WReady and Config.ComboSub.useW and not IsMyManaLow() and GetDistance(Target) > 580 + VP:GetHitBox(Target) then
 		CastW(Target)
 	end
 
@@ -218,32 +221,42 @@ end
 
 
 function Harass(Target)
-	if QReady and Config.HarassSub.useQ and not IsMyManaLowHarass() then
+	if QReady and Config.HarassSub.useQ and not IsMyManaLowHarass() and GetDistance(Target) > 580 + VP:GetHitBox(Target) then
 		CastQ(Target)
 	end
 
-	if WReady and Config.HarassSub.useW and not IsMyManaLowHarass() then
+	if WReady and Config.HarassSub.useW and not IsMyManaLowHarass() and GetDistance(Target) > 580 + VP:GetHitBox(Target)  then
 		CastW(Target)
 	end
 end
 
 function CastQ(Target)
 	EnemyMinions:update()
+		if Config.Extras.Debug then
+			print('CastQ called')
+		end		
 	-- print(CountEnemyNearPerson(Target,800))
 	-- print(ValidTarget(Target, 1300))
-	if ValidTarget(Target, 1300) and not Target.dead and GetDistance(Target) > 550 and GetDistance(Target) < SpellQ.ExtendedRange then
+	if ValidTarget(Target, 1300) and not Target.dead and GetDistance(Target) > 550 + VP:GetHitBox(Target) and GetDistance(Target) < SpellQ.ExtendedRange then
 		local CastPosition = FindBestCastPosition(Target)
 		if CastPosition ~= nil and GetDistance(CastPosition) < SpellQ.Range + 100 then
 			CastSpell(_Q, CastPosition)
+			if Config.Extras.Debug then
+				print('CastQ casted')
+			end		
 		end
 		-- if Config.Extras.Debug then
 		-- 	print('Returning CastQ2')
 		-- end	
-	elseif ValidTarget(Target, 1300) and not Target.dead and GetDistance(Target) < 550 and ShouldCast(Target) then
+	--elseif ValidTarget(Target, 1300) and not Target.dead and GetDistance(Target) < 550 + VP:GetHitBox(Target) and ShouldCast(Target) then
+	elseif ValidTarget(Target, 1300) and not Target.dead and GetDistance(Target) < 550 + VP:GetHitBox(Target) then
 		-- if Config.Extras.Debug then
 		-- 	print('Returning CastQ1')
 		-- end		
 		CastSpell(_Q, Target)
+		if Config.Extras.Debug then
+			print('CastQ casted')
+		end		
 	end
 end
 
@@ -274,10 +287,29 @@ function CastE()
 end
 
 function CastW(Target)
-	if WReady and ShouldCast(Target) then
+	if WReady then
 		local CastPoint, HitChance, pos =  VP:GetCircularCastPosition(Target, SpellW.Delay, SpellW.Width, SpellW.Range, SpellW.Speed, myHero, true)
 		if GetDistance(CastPoint) < SpellW.Range and HitChance >= 1 then
 			CastSpell(_W, CastPoint.x, CastPoint.z)
+		end
+	end
+end
+
+function OnAnimation(unit, animation)
+	if unit.isMe and animation:lower():find("attack") then
+		if Config.Extras.Debug then
+			print('Attack Animation')
+		end		
+		if (Config.Combo or Config.Harass) and ((Config.ComboSub.useQ or Config.HarassSub.useQ) and QReady) and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) and not IsMyManaLow() then
+			CastQ(target)
+			if Config.Extras.Debug then
+				print('QChained')
+			end
+		elseif (Config.Combo or Config.Harass) and ((Config.ComboSub.useW or Config.HarassSub.useW) and WReady) and not QReady and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) and not IsMyManaLow() then
+			CastW(target)
+			if Config.Extras.Debug then
+				print('WChained')
+			end
 		end
 	end
 end
@@ -396,7 +428,7 @@ end
 
 
 function Reset(Target)
-	if GetDistance(Target) > 600 then
+	if GetDistance(Target) > 550 + VP:GetHitBox(Target) then
 		return true
 	elseif _G.MMA_Loaded and _G.MMA_NextAttackAvailability < 0.6 then
 		return true
