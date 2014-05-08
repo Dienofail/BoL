@@ -48,7 +48,7 @@ end
 
 local player = GetMyHero()
 
-local Champions = {["Ezreal"] = {Speed = 2000, Delay = 1.0}, ["Ashe"] = {Speed = 1600, Delay = 0.125}, ["Jinx"] = {Delay = 0.250, Speed = 1700}, ["Draven"] = {Delay = 0.500, Speed = 2000}}
+local Champions = {["Ezreal"] = {Speed = 2000, Delay = 1.0}, ["Ashe"] = {Speed = 1600, Delay = 0.125}, ["Jinx"] = {Delay = 0.700, Speed = 1700}, ["Draven"] = {Delay = 0.500, Speed = 2000}}
 if player.charName ~= "Ezreal" and player.charName ~= "Ashe" and player.charName ~= "Jinx" and player.charName ~= "Draven" then return end
 
 local BasedConfig = nil
@@ -184,8 +184,8 @@ function OnRecall(hero, channelTimeInMs)    -- gets triggered when somebody star
 		if getDmg("R", hero, player) > hero.health and TargetData.Target == nil then
 			TargetData.Target = hero
 			TargetData.Time = GetTickCount()
-			TargetData.RecallTime = channelTimeInMs+450
-			TargetData.RecallTimeStatic = channelTimeInMs+450
+			TargetData.RecallTime = channelTimeInMs
+			TargetData.RecallTimeStatic = channelTimeInMs
 			DrawData.prevTick = GetTickCount()
 			DrawData.Time = 1000
 			--PrintChat("Queued")
