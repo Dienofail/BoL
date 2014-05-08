@@ -1,4 +1,4 @@
-local version = "0.06"
+local version = "0.08"
 --[[
 
 Free Varus!
@@ -18,6 +18,10 @@ v0.04 - small fixes
 v0.05 - Github
 
 v0.06 - fixes to Q stuck. Should get stuck far less often during combo (ditto on other modes)
+
+v0.07 - Github
+
+v0.08 - Separate W stack slider for combo and harass
 ]]
 if myHero.charName ~= "Varus" then return end
 require 'VPrediction'
