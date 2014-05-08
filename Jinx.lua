@@ -1,4 +1,4 @@
-local version = "1.06"
+local version = "1.07"
 --[[
 
 Free Jinx!
@@ -47,6 +47,8 @@ v1.04 - Github
 v1.05 - Fixes to Q swapping
 
 v1.06 - Fixes to bugs in Q swapping introduced in v1.05
+
+v1.07 - Added mana manager and increased activation delay for auto E
 
 ]]
 
@@ -159,11 +161,19 @@ function Menu()
 	Config.Extras:addParam("SwapThree", "Swap Q at three fishbone stacks", SCRIPT_PARAM_ONOFF, false)
 	Config.Extras:addParam("SwapDistance", "Swap Q for Distance", SCRIPT_PARAM_ONOFF, true)
 	Config.Extras:addParam("SwapAOE", "Swap Q for AoE", SCRIPT_PARAM_ONOFF, true)
+	Config.Extras:addParam("mManager", "Mana Slider", SCRIPT_PARAM_SLICE, 0, 0, 100, 0)
 	--Permashow
 	Config:permaShow("Combo")
 	Config:permaShow("Harass")
 end
 
+function IsMyManaLow()
+    if myHero.mana < (myHero.maxMana * ( Config.Extras.mManager / 100)) then
+        return true
+    else
+        return false
+    end
+end
 --Credit Trees
 function GetCustomTarget()
 	ts:update()
@@ -217,15 +227,15 @@ function Combo(Target)
 		-- if Config.Extras.Debug then
 		-- 	print('Combo called')
 		-- end	
-	if GetDistance(Target) < 1575 and Config.ComboSub.useW then
+	if GetDistance(Target) < 1575 and Config.ComboSub.useW and not IsMyManaLow() then
 		CastW(Target)
 	end
 
-	if EReady and Config.ComboSub.useE then
+	if EReady and Config.ComboSub.useE and not IsMyManaLow() then
 		CastE(Target)
 	end
 
-	if EReady and Config.Extras.EAutoCast then
+	if EReady and Config.Extras.EAutoCast and not IsMyManaLow()then
 		AutoCastE(Target)
 	end
 
@@ -236,7 +246,7 @@ function Combo(Target)
 		Swap(Target)
 	end
 
-	if RReady and Config.ComboSub.useR then
+	if RReady and Config.ComboSub.useR and not IsMyManaLow() then
 		CastR(Target)
 	end
 end
@@ -265,13 +275,16 @@ function Swap(Target)
 			if Config.Extras.SwapDistance and GetDistance(PredictedPos) < 575 + VP:GetHitBox(Target) and GetDistance(Target) < 600 + VP:GetHitBox(Target) then
 				CastSpell(_Q)
 			end
+			if IsMyManaLow() and GetDistance(Target) < 600 + VP:GetHitBox(Target) then
+				CastSpell(_Q)
+			end
 		end
 	end
 end
 
 
 function Harass(Target)
-	if WReady and Config.HarassSub.useW then
+	if WReady and Config.HarassSub.useW and not IsMyManaLow() then
 		CastW(Target)
 	end
 
@@ -279,7 +292,7 @@ function Harass(Target)
 		Swap(Target)
 	end
 
-	if EReady and Config.HarassSub.useE then
+	if EReady and Config.HarassSub.useE and not IsMyManaLow() then
 		CastE(Target)
 	end
 end
@@ -395,7 +408,7 @@ end
 
 function AutoCastE(Target) 
 	if Target ~= nil and not Target.dead and ValidTarget(Target, 1500) then
-		local CastPosition, HitChance, Position = VP:GetCircularCastPosition(Target, SpellE.Delay+0.1, 60, SpellE.Range, SpellE.Speed, myHero, false)
+		local CastPosition, HitChance, Position = VP:GetCircularCastPosition(Target, SpellE.Delay+0.2, 60, SpellE.Range, SpellE.Speed, myHero, false)
 		if HitChance >= 3 and EReady and GetDistance(CastPosition) < SpellE.Range then
 			CastSpell(_E, CastPosition.x, CastPosition.z)
 		end

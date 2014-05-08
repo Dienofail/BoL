@@ -316,7 +316,7 @@ function Combo()
 		end
 
 		if HumanWready then
-			CastHumanW(Target, 0.2)
+			CastHumanW(Target, 1)
 		end
 	end
 
@@ -329,7 +329,7 @@ function Combo()
 		if SpiderWready and GetDistance(Target) < 300 then
 			CastSpiderW()
 		end
-		if AutoCarry.PluginMenu.UseSpiderECombo and GetDistance(Target, myHero) >= AutoCarry.PluginMenu.EGapCloseDistance and SpiderEready then
+		if AutoCarry.PluginMenu.UseSpiderECombo and GetDistance(Target) >= AutoCarry.PluginMenu.EGapCloseDistance and SpiderEready then
 			CastSpiderE(Target, 1, 0)
 		end
 	end
