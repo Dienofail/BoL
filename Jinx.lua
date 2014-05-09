@@ -1,4 +1,4 @@
-local version = "1.09"
+local version = "1.10"
 --[[
 
 Free Jinx!
@@ -53,6 +53,9 @@ v1.07 - Added mana manager and increased activation delay for auto E
 v1.08 - Adjusted W issues. 
 
 v1.09 - Autoupdate issues
+
+v1.10 - Finally updated variable Jinx ult speed :D
+
 ]]
 
 if myHero.charName ~= "Jinx" then return end
@@ -317,7 +320,8 @@ end
 function CastR(Target)
 	if Target ~= nil and GetDistance(Target) < Config.Extras.RRange and RReady then
 		if CountEnemyNearPerson(Target, 250) > Config.Extras.REnemies then
-			local RAoEPosition, RHitchance, NumHit = VP:GetCircularAOECastPosition(Target, SpellR.Delay, SpellR.Width, SpellR.Range, SpellR.Speed, myHero)
+			local CurrentRSpeed = JinxUltSpeed(Target)
+			local RAoEPosition, RHitchance, NumHit = VP:GetCircularAOECastPosition(Target, SpellR.Delay, SpellR.Width, SpellR.Range, CurrentRSpeed, myHero)
 			if RHitchance >= 2 and RAoEPosition ~= nil and GetDistance(RAoEPosition) < Config.Extras.RRange then
 				CastSpell(_R, RAoEPosition.x, RAoEPosition.z)
 			end
@@ -328,7 +332,8 @@ function CastR(Target)
 			if Target.health < ADamage * 3.5 then 
 				return
 			elseif Target.health < RDamage then
-				local RPosition, HitChance, Pos = VP:GetLineCastPosition(Target, SpellR.Delay, SpellR.Width, Config.Extras.RRange, SpellR.Speed, myHero, false)
+				local CurrentRSpeed = JinxUltSpeed(Target)
+				local RPosition, HitChance, Pos = VP:GetLineCastPosition(Target, SpellR.Delay, SpellR.Width, Config.Extras.RRange, CurrentRSpeed, myHero, false)
 				local WillCollide = Col:GetHeroCollision(myHero, RPosition, HERO_ENEMY)
 				if HitChance >= 2 and not WillCollide then
 					CastSpell(_R, RPosition.x, RPosition.z)
@@ -338,7 +343,8 @@ function CastR(Target)
 			local RDamage = getDmg("R", Target, myHero)
 			local ADamage = getDmg("AD", Target, myHero)
 			if Target.health < RDamage then
-				local RPosition, HitChance, Pos = VP:GetLineCastPosition(Target, SpellR.Delay, SpellR.Width, Config.Extras.RRange, SpellR.Speed, myHero, false)
+				local CurrentRSpeed = JinxUltSpeed(Target)
+				local RPosition, HitChance, Pos = VP:GetLineCastPosition(Target, SpellR.Delay, SpellR.Width, Config.Extras.RRange, CurrentRSpeed, myHero, false)
 				local WillCollide = Col:GetHeroCollision(myHero, RPosition, HERO_ENEMY)
 				if HitChance >= 2 and not WillCollide then
 					CastSpell(_R, RPosition.x, RPosition.z)
@@ -541,6 +547,14 @@ function GetWallCollision(Target)
 		end
 	elseif EReady and GetDistance(Destination2) < SpellE.Range and GetDistance(Destination1, Destination2) < 50 and GetDistance(TargetDestination, Destination13D) < 100 and VP:CountWaypoints(Target.networkID, os.clock() - 0.5) == 0 then
 		CastSpell(_E, Destination13D.x, Destination13D.z)
+	end
+end
+
+function JinxUltSpeed(Target)
+	if Target ~= nil and ValidTarget(Target) then
+		local Distance = GetDistance(Target)
+		local Speed = (Distance > 1350 and (1350*1700+((Distance-1350)*2200))/Distance or 1700)
+		return Speed
 	end
 end
 
