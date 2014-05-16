@@ -1,4 +1,4 @@
-local version = "1.10"
+local version = "1.11"
 --[[
 
 Free Lucian!
@@ -46,6 +46,8 @@ v1.08 - Fixes to aa canceling
 v1.09 - Fixes to autoupdater
 
 v1.10 - Fixes to spellweaving
+
+v1.11 - Q range adjustment
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -83,7 +85,7 @@ end
 
 local Config = nil
 local VP = VPrediction()
-local SpellQ = {Speed = math.huge, Range = 550, Delay = 0.320, Width = 65, ExtendedRange = 1100}
+local SpellQ = {Speed = math.huge, Range = 575, Delay = 0.320, Width = 65, ExtendedRange = 1100}
 local SpellW = {Speed = 1600, Range = 1000, Delay = 0.300, Width = 55}
 local SpellR = {Range = 1400, Width = 110, Speed = 2800, Delay= 0}
 local QReady, WReady, EReady, RReady = nil, nil, nil, nil 
@@ -311,12 +313,12 @@ function OnAnimation(unit, animation)
 			print(animation)
 		end		
 		if (Config.Combo or Config.Harass) and ((Config.ComboSub.useQ or Config.HarassSub.useQ) and QReady) and target.type == myHero.type and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLow() then
-			DelayAction(function() CastQ(target) end, animation_time + 0.15)
+			DelayAction(function() CastQ(target) end, animation_time + 0.1)
 			if Config.Extras.Debug then
 				print('QChained')
 			end
 		elseif (Config.Combo or Config.Harass) and ((Config.ComboSub.useW or Config.HarassSub.useW) and WReady) and target.type == myHero.type and not QReady and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLow() then
-			DelayAction(function() CastW(target) end, animation_time + 0.15)
+			DelayAction(function() CastW(target) end, animation_time + 0.1)
 			if Config.Extras.Debug then
 				print('WChained')
 			end
