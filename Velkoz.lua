@@ -1131,7 +1131,7 @@ end
 function OnDraw()
 	if Config.Extras.Debug then
 		DrawText3D("Current isPressedR status is " .. tostring(isPressedR), myHero.x, myHero.y, myHero.z, 25,  ARGB(255,255,0,0), true)
-		DrawText3D("Current BlockQ status is " .. tostring(BlockQ), myHero.x+100, myHero.y+100, myHero.z+100, 25,  ARGB(255,255,0,0), true)
+		DrawText3D("Current BlockQ status is " .. tostring(BlockQ), myHero.x+100, myHero.y+100, myHero.z+100, 25,  ARGB(255,255,0,0), true) 
 		--DrawText3D("current LastDetonateTime is " .. tostring(LastDetonateTime), myHero.x-100, myHero.y-100, myHero.z-100, 25, ARGB(255,255,0,0), true )
 		if target ~= nil then
 			DrawText3D("Current target status is " .. tostring(target2.charName), myHero.x+200, myHero.y+200, myHero.z+200, 25,  ARGB(255,255,0,0), true)

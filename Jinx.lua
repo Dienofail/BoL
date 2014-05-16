@@ -1,4 +1,4 @@
-local version = "1.10"
+local version = "1.11"
 --[[
 
 Free Jinx!
@@ -56,6 +56,7 @@ v1.09 - Autoupdate issues
 
 v1.10 - Finally updated variable Jinx ult speed :D
 
+v1.11 - Separate mana managers for harass
 ]]
 
 if myHero.charName ~= "Jinx" then return end
@@ -137,12 +138,12 @@ function Menu()
 	Config.ComboSub:addParam("useW", "Use W", SCRIPT_PARAM_ONOFF, true)
 	Config.ComboSub:addParam("useE", "Use E", SCRIPT_PARAM_ONOFF, true)
 	Config.ComboSub:addParam("useR", "Use R", SCRIPT_PARAM_ONOFF, true)
-
+	Config.ComboSub:addParam("mManager", "Mana Slider", SCRIPT_PARAM_SLICE, 0, 0, 100, 0)
 	--Harass
 	Config.HarassSub:addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
 	Config.HarassSub:addParam("useW", "Use W", SCRIPT_PARAM_ONOFF, true)
 	Config.HarassSub:addParam("useE", "Use E", SCRIPT_PARAM_ONOFF, true)
-	
+	Config.HarassSub:addParam("mManager", "Mana Slider", SCRIPT_PARAM_SLICE, 0, 0, 100, 0)	
 	--Draw 
 	Config.Draw:addParam("DrawOtherQ", "Draw Other Q", SCRIPT_PARAM_ONOFF, true)
 	Config.Draw:addParam("DrawW", "Draw W Range", SCRIPT_PARAM_ONOFF, true)
@@ -165,19 +166,27 @@ function Menu()
 	Config.Extras:addParam("SwapThree", "Swap Q at three fishbone stacks", SCRIPT_PARAM_ONOFF, false)
 	Config.Extras:addParam("SwapDistance", "Swap Q for Distance", SCRIPT_PARAM_ONOFF, true)
 	Config.Extras:addParam("SwapAOE", "Swap Q for AoE", SCRIPT_PARAM_ONOFF, true)
-	Config.Extras:addParam("mManager", "Mana Slider", SCRIPT_PARAM_SLICE, 0, 0, 100, 0)
 	--Permashow
 	Config:permaShow("Combo")
 	Config:permaShow("Harass")
 end
 
 function IsMyManaLow()
-    if myHero.mana < (myHero.maxMana * ( Config.Extras.mManager / 100)) then
+    if myHero.mana < (myHero.maxMana * ( Config.ComboSub.mManager / 100)) then
         return true
     else
         return false
     end
 end
+
+function IsMyManaLowHarass()
+    if myHero.mana < (myHero.maxMana * ( Config.HarassSub.mManager / 100)) then
+        return true
+    else
+        return false
+    end
+end
+
 --Credit Trees
 function GetCustomTarget()
 	ts:update()
@@ -243,7 +252,7 @@ function Combo(Target)
 		AutoCastE(Target)
 	end
 
-	if QReady and Config.ComboSub.useQ then
+	if QReady and Config.ComboSub.useQ and not IsMyManaLow() then
 		-- if Config.Extras.Debug then
 		-- 	print('Cast Q called')
 		-- end	
@@ -288,15 +297,15 @@ end
 
 
 function Harass(Target)
-	if WReady and Config.HarassSub.useW and not IsMyManaLow() then
+	if WReady and Config.HarassSub.useW and not IsMyManaLowHarass() then
 		CastW(Target)
 	end
 
-	if QReady and Config.HarassSub.useQ then
+	if QReady and Config.HarassSub.useQ  and not IsMyManaLowHarass() then
 		Swap(Target)
 	end
 
-	if EReady and Config.HarassSub.useE and not IsMyManaLow() then
+	if EReady and Config.HarassSub.useE and not IsMyManaLowHarass() then
 		CastE(Target)
 	end
 end
