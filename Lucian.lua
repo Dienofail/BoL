@@ -1,4 +1,4 @@
-local version = "1.09"
+local version = "1.10"
 --[[
 
 Free Lucian!
@@ -44,6 +44,8 @@ v1.07 - Minor fixes to Q target selection
 v1.08 - Fixes to aa canceling
 
 v1.09 - Fixes to autoupdater
+
+v1.10 - Fixes to spellweaving
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -308,14 +310,13 @@ function OnAnimation(unit, animation)
 		if Config.Extras.Debug then
 			print(animation)
 		end		
-		if (Config.Combo or Config.Harass) and ((Config.ComboSub.useQ or Config.HarassSub.useQ) and QReady) and target.type == myHero.type and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) and not IsMyManaLow() then
-			
-			DelayAction(function() CastQ(target) end, animation_time + 0.01)
+		if (Config.Combo or Config.Harass) and ((Config.ComboSub.useQ or Config.HarassSub.useQ) and QReady) and target.type == myHero.type and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLow() then
+			DelayAction(function() CastQ(target) end, animation_time + 0.15)
 			if Config.Extras.Debug then
 				print('QChained')
 			end
-		elseif (Config.Combo or Config.Harass) and ((Config.ComboSub.useW or Config.HarassSub.useW) and WReady) and target.type == myHero.type and not QReady and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) and not IsMyManaLow() then
-			DelayAction(function() CastW(target) end, animation_time + 0.01)
+		elseif (Config.Combo or Config.Harass) and ((Config.ComboSub.useW or Config.HarassSub.useW) and WReady) and target.type == myHero.type and not QReady and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLow() then
+			DelayAction(function() CastW(target) end, animation_time + 0.15)
 			if Config.Extras.Debug then
 				print('WChained')
 			end
