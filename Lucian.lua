@@ -1,4 +1,4 @@
-local version = "1.11"
+local version = "1.12"
 --[[
 
 Free Lucian!
@@ -48,6 +48,8 @@ v1.09 - Fixes to autoupdater
 v1.10 - Fixes to spellweaving
 
 v1.11 - Q range adjustment
+
+v1.12 - Turned collision for W off. 
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -85,7 +87,7 @@ end
 
 local Config = nil
 local VP = VPrediction()
-local SpellQ = {Speed = math.huge, Range = 575, Delay = 0.320, Width = 65, ExtendedRange = 1100}
+local SpellQ = {Speed = math.huge, Range = 585, Delay = 0.320, Width = 65, ExtendedRange = 1100}
 local SpellW = {Speed = 1600, Range = 1000, Delay = 0.300, Width = 55}
 local SpellR = {Range = 1400, Width = 110, Speed = 2800, Delay= 0}
 local QReady, WReady, EReady, RReady = nil, nil, nil, nil 
@@ -300,7 +302,7 @@ end
 
 function CastW(Target)
 	if WReady then
-		local CastPoint, HitChance, pos =  VP:GetCircularCastPosition(Target, SpellW.Delay, SpellW.Width, SpellW.Range, SpellW.Speed, myHero, true)
+		local CastPoint, HitChance, pos =  VP:GetCircularCastPosition(Target, SpellW.Delay, SpellW.Width, SpellW.Range, SpellW.Speed, myHero, false)
 		if GetDistance(CastPoint) < SpellW.Range and HitChance >= 1 then
 			CastSpell(_W, CastPoint.x, CastPoint.z)
 		end
