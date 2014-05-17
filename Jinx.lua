@@ -1,4 +1,4 @@
-local version = "1.11"
+local version = "1.12"
 --[[
 
 Free Jinx!
@@ -57,6 +57,8 @@ v1.09 - Autoupdate issues
 v1.10 - Finally updated variable Jinx ult speed :D
 
 v1.11 - Separate mana managers for harass
+
+v1.12 - Now reverts back to minigun if enemy out of range in harass mode
 ]]
 
 if myHero.charName ~= "Jinx" then return end
@@ -213,6 +215,8 @@ function OnTick()
 			Harass(target)
 		elseif Config.Harass and Wtarget ~= nil then
 			Harass(Wtarget)
+		elseif Config.Harass and Wtarget == nil and not isFishBones then
+			CastSpell(_Q)
 		end
 
 		if Config.Farm then
@@ -289,6 +293,9 @@ function Swap(Target)
 				CastSpell(_Q)
 			end
 			if IsMyManaLow() and GetDistance(Target) < 600 + VP:GetHitBox(Target) then
+				CastSpell(_Q)
+			end 
+			if Config.Harass and GetDistance(Target) > 600 + VP:GetHitbox(Target) + 50 then
 				CastSpell(_Q)
 			end
 		end
