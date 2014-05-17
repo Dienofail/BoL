@@ -1,4 +1,4 @@
-local version = "1.12"
+local version = "1.13"
 --[[
 
 Free Lucian!
@@ -49,7 +49,9 @@ v1.10 - Fixes to spellweaving
 
 v1.11 - Q range adjustment
 
-v1.12 - Turned collision for W off. 
+v1.12 - Turned collision for W off
+
+v1.13 - Fixed harass mana manager
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -314,6 +316,7 @@ function OnAnimation(unit, animation)
 		if Config.Extras.Debug then
 			print(animation)
 		end		
+		--[[
 		if (Config.Combo or Config.Harass) and ((Config.ComboSub.useQ or Config.HarassSub.useQ) and QReady) and target.type == myHero.type and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLow() then
 			DelayAction(function() CastQ(target) end, animation_time + 0.1)
 			if Config.Extras.Debug then
@@ -323,6 +326,32 @@ function OnAnimation(unit, animation)
 			DelayAction(function() CastW(target) end, animation_time + 0.1)
 			if Config.Extras.Debug then
 				print('WChained')
+			end
+		end
+		]]
+		if Config.Combo then
+			if (Config.ComboSub.useQ and QReady) and target.type == myHero.type and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLow() then -- Q combo
+				DelayAction(function() CastQ(target) end, animation_time + 0.1)
+				if Config.Extras.Debug then
+					print('QChainedCombo')
+				end
+			elseif (Config.ComboSub.useW and WReady) and target.type == myHero.type and not QReady and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLow() then -- W combo
+				DelayAction(function() CastW(target) end, animation_time + 0.1)
+				if Config.Extras.Debug then
+					print('WChainedCombo')
+				end
+			end
+		elseif Config.Harass then
+			if (Config.HarassSub.useQ and QReady) and target.type == myHero.type and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLowHarass() then -- Q Harass
+				DelayAction(function() CastQ(target) end, animation_time + 0.1)
+				if Config.Extras.Debug then
+					print('QChainedHarass')
+				end
+			elseif (Config.HarassSub.useW and WReady) and target.type == myHero.type and not QReady and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLowHarass() then -- W Harass
+				DelayAction(function() CastW(target) end, animation_time + 0.1)
+				if Config.Extras.Debug then
+					print('WChainedHarass')
+				end
 			end
 		end
 	end
