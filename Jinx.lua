@@ -1,4 +1,4 @@
-local version = "1.12"
+local version = "1.13"
 --[[
 
 Free Jinx!
@@ -59,6 +59,8 @@ v1.10 - Finally updated variable Jinx ult speed :D
 v1.11 - Separate mana managers for harass
 
 v1.12 - Now reverts back to minigun if enemy out of range in harass mode
+
+v1.13 - Typo fix
 ]]
 
 if myHero.charName ~= "Jinx" then return end
@@ -295,7 +297,7 @@ function Swap(Target)
 			if IsMyManaLow() and GetDistance(Target) < 600 + VP:GetHitBox(Target) then
 				CastSpell(_Q)
 			end 
-			if Config.Harass and GetDistance(Target) > 600 + VP:GetHitbox(Target) + 50 then
+			if Config.Harass and GetDistance(Target) > 600 + VP:GetHitBox(Target) + 50 then
 				CastSpell(_Q)
 			end
 		end
