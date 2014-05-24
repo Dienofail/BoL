@@ -105,8 +105,9 @@ local lastWindUpTime = 0
 local lastAttackCD = 0
 local animation_time = 0
 function OnLoad()
-	Menu()
-	Init()
+	DelayAction(checkOrbwalker,2)
+	DelayAction(Menu,4)
+	DelayAction(Init,4)
 end
 
 function Init()
@@ -123,7 +124,23 @@ function Init()
     initDone = true
 end
 
-
+function checkOrbwalker()
+    if _G.MMA_Loaded ~= nil and _G.MMA_Loaded then
+        IsMMALoaded = true
+        print('MMA detected')
+    elseif _G.AutoCarry then
+        IsSACLoaded = true
+        print('SAC detected')
+    elseif FileExist(LIB_PATH .."SOW.lua") then
+        require "SOW"
+        SOWi = SOW(VP)
+        IsSowLoaded = true
+        SOWi:RegisterAfterAttackCallback(AutoAttackReset)
+        print('SOW loaded')
+    else
+        print('Please use SAC, MMA, or SOW for your orbwalker')
+    end
+end
 function Menu()
 	Config = scriptConfig("Lucian", "Lucian")
 	Config:addParam("Combo", "Combo", SCRIPT_PARAM_ONKEYDOWN, false, 32)
@@ -161,6 +178,12 @@ function Menu()
 	Config:permaShow("Combo")
 	Config:permaShow("Farm")
 	Config:permaShow("Harass")
+
+
+    if IsSowLoaded then
+        Config:addSubMenu("Orbwalker", "SOWiorb")
+        SOWi:LoadToMenu(Config.SOWiorb)
+    end
 end
 
 function IsMyManaLow()
@@ -330,24 +353,24 @@ function OnAnimation(unit, animation)
 		end
 		]]
 		if Config.Combo then
-			if (Config.ComboSub.useQ and QReady) and target.type == myHero.type and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLow() then -- Q combo
+			if (Config.ComboSub.useQ and QReady) and target.type == myHero.type and not isBuffed and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLow() then -- Q combo
 				DelayAction(function() CastQ(target) end, animation_time + 0.1)
 				if Config.Extras.Debug then
 					print('QChainedCombo')
 				end
-			elseif (Config.ComboSub.useW and WReady) and target.type == myHero.type and not QReady and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLow() then -- W combo
+			elseif (Config.ComboSub.useW and WReady) and target.type == myHero.type and not isBuffed and not QReady and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLow() then -- W combo
 				DelayAction(function() CastW(target) end, animation_time + 0.1)
 				if Config.Extras.Debug then
 					print('WChainedCombo')
 				end
 			end
 		elseif Config.Harass then
-			if (Config.HarassSub.useQ and QReady) and target.type == myHero.type and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLowHarass() then -- Q Harass
+			if (Config.HarassSub.useQ and QReady) and target.type == myHero.type and not isBuffed  and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLowHarass() then -- Q Harass
 				DelayAction(function() CastQ(target) end, animation_time + 0.1)
 				if Config.Extras.Debug then
 					print('QChainedHarass')
 				end
-			elseif (Config.HarassSub.useW and WReady) and target.type == myHero.type and not QReady and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLowHarass() then -- W Harass
+			elseif (Config.HarassSub.useW and WReady) and target.type == myHero.type and not isBuffed  and not QReady and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLowHarass() then -- W Harass
 				DelayAction(function() CastW(target) end, animation_time + 0.1)
 				if Config.Extras.Debug then
 					print('WChainedHarass')
@@ -355,6 +378,37 @@ function OnAnimation(unit, animation)
 			end
 		end
 	end
+end
+
+function AutoAttackReset()
+	if target ~= nil and IsSowLoaded then
+		if Config.Combo then
+			if (Config.ComboSub.useQ and QReady) and target.type == myHero.type and not isBuffed  and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLow() then -- Q combo
+				CastQ(target)
+				if Config.Extras.Debug then
+					print('QChainedCombo')
+				end
+			elseif (Config.ComboSub.useW and WReady) and target.type == myHero.type and not isBuffed  and not QReady and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLow() then -- W combo
+				CastW(target)
+				if Config.Extras.Debug then
+					print('WChainedCombo')
+				end
+			end
+		elseif Config.Harass then
+			if (Config.HarassSub.useQ and QReady) and target.type == myHero.type and not isBuffed  and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLowHarass() then -- Q Harass
+				CastQ(target)
+				if Config.Extras.Debug then
+					print('QChainedHarass')
+				end
+			elseif (Config.HarassSub.useW and WReady) and target.type == myHero.type and not isBuffed  and not QReady and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLowHarass() then -- W Harass
+				CastW(target)
+				if Config.Extras.Debug then
+					print('WChainedHarass')
+				end
+			end
+		end
+	end
+
 end
 
 function Farm()
