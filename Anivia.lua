@@ -1,4 +1,4 @@
-local version = "0.06"
+local version = "0.07"
 --[[
 
 Anivia, The Bird is the Word
@@ -16,6 +16,10 @@ v0.03 - Small fixes to a number of functions based on suggestions by gent
 v0.04 - Small fixes to R usage. 
 
 v0.05 - Rewrote R farm
+
+v0.06 - Github
+
+v0.07 - Fixes to chilled detection
 
 ]]
 
@@ -388,7 +392,7 @@ function CastW(position)
 end
 
 function CastE(Target)
-	if chilled[Target.networkID] > GetTickCount() and GetDistance(Target) < SpellE.Range and not IsMyManaLow() and TargetHaveBuff("chilled", Target) then
+	if GetDistance(Target) < SpellE.Range and not IsMyManaLow() and TargetHaveBuff("chilled", Target) then
 		CastSpell(_E, Target)
 	end
 end
