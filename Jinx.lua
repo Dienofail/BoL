@@ -1,4 +1,4 @@
-local version = "1.13"
+local version = "1.14"
 --[[
 
 Free Jinx!
@@ -61,6 +61,8 @@ v1.11 - Separate mana managers for harass
 v1.12 - Now reverts back to minigun if enemy out of range in harass mode
 
 v1.13 - Typo fix
+
+v1.14 - SoW integration
 ]]
 
 if myHero.charName ~= "Jinx" then return end
@@ -111,10 +113,33 @@ local isFishBones = true
 local FishStacks = 0
 local Walking = false
 local QRange
+
+
+
 function OnLoad()
-	Menu()
-	Init()
+	DelayAction(checkOrbwalker, 3)
+	DelayAction(Menu,5)
+	DelayAction(Init,5)
 end
+
+function checkOrbwalker()
+    if _G.MMA_Loaded ~= nil and _G.MMA_Loaded then
+        IsMMALoaded = true
+        print('MMA detected')
+    elseif _G.AutoCarry then
+        IsSACLoaded = true
+        print('SAC detected')
+    elseif FileExist(LIB_PATH .."SOW.lua") then
+        require "SOW"
+        SOWi = SOW(VP)
+        IsSowLoaded = true
+        SOWi:RegisterAfterAttackCallback(AutoAttackReset)
+        print('SOW loaded')
+    else
+        print('Please use SAC, MMA, or SOW for your orbwalker')
+    end
+end
+
 
 function Init()
 	ts = TargetSelector(TARGET_LESS_CAST_PRIORITY, 1575, DAMAGE_PHYSICAL)
@@ -173,6 +198,10 @@ function Menu()
 	--Permashow
 	Config:permaShow("Combo")
 	Config:permaShow("Harass")
+	if IsSowLoaded then
+        Config:addSubMenu("Orbwalker", "SOWiorb")
+        SOWi:LoadToMenu(Config.SOWiorb)
+    end
 end
 
 function IsMyManaLow()
@@ -442,31 +471,33 @@ end
 
 
 function OnDraw()
-	if Config.Extras.Debug then
-		DrawText3D("Current FishBones status is " .. tostring(isFishBones), myHero.x+200, myHero.y, myHero.z+200, 25,  ARGB(255,255,0,0), true)
-		DrawText3D("Current FishBones stacks is " .. tostring(FishStacks), myHero.x, myHero.y, myHero.z, 25,  ARGB(255,255,0,0), true)
-		if Wtarget ~= nil then
-			DrawCircle2(Wtarget.x, Wtarget.y, Wtarget.z, 150, ARGB(255, 0, 255, 255))
+	if initDone then
+		if Config.Extras.Debug then
+			DrawText3D("Current FishBones status is " .. tostring(isFishBones), myHero.x+200, myHero.y, myHero.z+200, 25,  ARGB(255,255,0,0), true)
+			DrawText3D("Current FishBones stacks is " .. tostring(FishStacks), myHero.x, myHero.y, myHero.z, 25,  ARGB(255,255,0,0), true)
+			if Wtarget ~= nil then
+				DrawCircle2(Wtarget.x, Wtarget.y, Wtarget.z, 150, ARGB(255, 0, 255, 255))
+			end
 		end
-	end
 
-	if Config.Draw.DrawW then
-		DrawCircle2(myHero.x, myHero.y, myHero.z, SpellW.Range, ARGB(255, 0, 255, 255))
-	end
+		if Config.Draw.DrawW then
+			DrawCircle2(myHero.x, myHero.y, myHero.z, SpellW.Range, ARGB(255, 0, 255, 255))
+		end
 
-	if Config.Draw.DrawE then
-		DrawCircle2(myHero.x, myHero.y, myHero.z, SpellE.Range, ARGB(255, 0, 255, 255))
-	end
+		if Config.Draw.DrawE then
+			DrawCircle2(myHero.x, myHero.y, myHero.z, SpellE.Range, ARGB(255, 0, 255, 255))
+		end
 
-	if Config.Draw.DrawR then
-		DrawCircle2(myHero.x, myHero.y, myHero.z, Config.Extras.RRange, ARGB(255, 0, 255, 255))
-	end
+		if Config.Draw.DrawR then
+			DrawCircle2(myHero.x, myHero.y, myHero.z, Config.Extras.RRange, ARGB(255, 0, 255, 255))
+		end
 
-	if Config.Draw.DrawOtherQ then
-		if isFishBones then
-			DrawCircle2(myHero.x, myHero.y, myHero.z, QRange,ARGB(255, 255, 0, 0))
-		else
-			DrawCircle2(myHero.x, myHero.y, myHero.z, 600, ARGB(255, 255, 0, 0))
+		if Config.Draw.DrawOtherQ then
+			if isFishBones then
+				DrawCircle2(myHero.x, myHero.y, myHero.z, QRange,ARGB(255, 255, 0, 0))
+			else
+				DrawCircle2(myHero.x, myHero.y, myHero.z, 600, ARGB(255, 255, 0, 0))
+			end
 		end
 	end
 end
