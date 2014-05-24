@@ -1,4 +1,4 @@
-local version = "1.13"
+local version = "1.14"
 --[[
 
 Free Lucian!
@@ -52,6 +52,8 @@ v1.11 - Q range adjustment
 v1.12 - Turned collision for W off
 
 v1.13 - Fixed harass mana manager
+
+v1.14 - SoW
 ]]
 
 if myHero.charName ~= "Lucian" then return end
