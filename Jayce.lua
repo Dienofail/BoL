@@ -1,4 +1,4 @@
-local version = "0.16"
+local version = "0.17"
 --[[
 Jayce, Hammer Time
 
@@ -35,6 +35,10 @@ v0.13 - Now will no longer cast hammer E if W status is active if consume W conf
 v0.14 - Added Ignite KS.
 
 v0.15 - Added compatibility to vpred 2.404 
+
+v0.16 - Github
+
+v0.17 - Fixes to CD calculations
 
 ]]
 
@@ -895,7 +899,7 @@ end
 
 function CalculateRealCD(total_cd)
 	current_cd = myHero.cdr
-	real_cd = total_cd + total_cd * current_cd
+	real_cd = total_cd - total_cd * current_cd
 	return real_cd
 end
 

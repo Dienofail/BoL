@@ -1,4 +1,4 @@
-local version = "0.08"
+local version = "0.09"
 --[[
 
 
@@ -28,6 +28,8 @@ v0.06 - Github
 v0.07 - Changed default jump distance
 
 v0.08 - fixes to rappel
+
+v0.09 - Fixes to CD calculations
 ]]--
 require "Prodiction"
 require "Collision"
@@ -198,7 +200,7 @@ end
 
 function CalculateRealCD(total_cd)
 	current_cd = myHero.cdr
-	real_cd = total_cd + total_cd * current_cd
+	real_cd = total_cd - total_cd * current_cd
 	return real_cd
 end
 
