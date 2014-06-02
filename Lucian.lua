@@ -1,4 +1,4 @@
-local version = "1.14"
+local version = "1.15"
 --[[
 
 Free Lucian!
@@ -54,6 +54,8 @@ v1.12 - Turned collision for W off
 v1.13 - Fixed harass mana manager
 
 v1.14 - SoW
+
+v1.15 - Fixes to config errors
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -106,6 +108,7 @@ local lastAttack = 0
 local lastWindUpTime = 0
 local lastAttackCD = 0
 local animation_time = 0
+local initDone = false
 function OnLoad()
 	DelayAction(checkOrbwalker,2)
 	DelayAction(Menu,4)
@@ -542,7 +545,8 @@ function Reset(Target)
 end
 
 function OnDraw()
-	if Config.Extras.Debug and Qtarget ~= nil then
+	if not initDone then return end
+	if initDone and Config ~= nil and Config.Extras.Debug and Qtarget ~= nil then
 		DrawText3D("Current IsPressedR status is " .. tostring(isPressedR), myHero.x+200, myHero.y, myHero.z+200, 25,  ARGB(255,255,0,0), true)
 		DrawText3D("Current isBuffed status is " .. tostring(isBuffed), myHero.x, myHero.y, myHero.z, 25,  ARGB(255,255,0,0), true)
 		DrawText3D("Current isReset status is " .. tostring(Reset(Qtarget)), myHero.x-100, myHero.y, myHero.z-100, 25,  ARGB(255,255,0,0), true)
@@ -562,6 +566,7 @@ function OnDraw()
 end
 
 function OnGainBuff(unit, buff)
+	if not initDone then return end
 	if unit.isMe and buff.name == 'lucianpassivebuff' then
 		isBuffed = true
 	end
@@ -576,6 +581,7 @@ function OnGainBuff(unit, buff)
 end
 
 function OnLoseBuff(unit, buff)
+	if not initDone then return end
 	if unit.isMe and buff.name == 'lucianpassivebuff' then
 		isBuffed = false
 	end
@@ -602,6 +608,7 @@ function OrbwalkToPosition(position)
 end
 
 function OnProcessSpell(unit, spell)
+	if not initDone then return end
     if unit == myHero then
         if spell.name:lower():find("attack") then
             lastAttack = GetTickCount() - GetLatency()/2
