@@ -1,4 +1,4 @@
-local version = "1.16"
+local version = "1.17"
 --[[
 
 Free Lucian!
@@ -58,6 +58,8 @@ v1.14 - SoW
 v1.15 - Fixes to config errors
 
 v1.16 - Added slider for animation delay and toggle for W collision
+
+v1.17 - Fixes
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -335,7 +337,7 @@ function CastE()
 end
 
 function CastW(Target)
-	if WReady then
+	if WReady and Target ~= nil then
 		local CastPoint, HitChance, pos = nil, nil, nil
 		if not Config.Extras.wcollision then
 			CastPoint, HitChance, pos =  VP:GetCircularCastPosition(Target, SpellW.Delay, SpellW.Width, SpellW.Range, SpellW.Speed, myHero, false)
