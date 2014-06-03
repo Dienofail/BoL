@@ -1,4 +1,4 @@
-local version = "1.15"
+local version = "1.16"
 --[[
 
 Free Lucian!
@@ -56,6 +56,8 @@ v1.13 - Fixed harass mana manager
 v1.14 - SoW
 
 v1.15 - Fixes to config errors
+
+v1.16 - Added slider for animation delay and toggle for W collision
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -179,6 +181,8 @@ function Menu()
 	Config.Extras:addParam("ESlows", "E Slows", SCRIPT_PARAM_ONOFF, true)
 	Config.Extras:addParam("CheckQ", "Check Q Using Minions", SCRIPT_PARAM_ONOFF, true)
 	Config.Extras:addParam("AoEQ", "Check AoE Q", SCRIPT_PARAM_ONOFF, true)
+	Config.Extras:addParam("spellweavedelay", "Spell Wave Delay (S)", SCRIPT_PARAM_SLICE, 0.3, 0, 1, 0)
+	Config.Extras:addParam("wcollision", "Collision on W", SCRIPT_PARAM_ONOFF, false)
 	--Permashow
 	Config:permaShow("Combo")
 	Config:permaShow("Farm")
@@ -332,9 +336,16 @@ end
 
 function CastW(Target)
 	if WReady then
-		local CastPoint, HitChance, pos =  VP:GetCircularCastPosition(Target, SpellW.Delay, SpellW.Width, SpellW.Range, SpellW.Speed, myHero, false)
-		if GetDistance(CastPoint) < SpellW.Range and HitChance >= 1 then
-			CastSpell(_W, CastPoint.x, CastPoint.z)
+		local CastPoint, HitChance, pos = nil, nil, nil
+		if not Config.Extras.wcollision then
+			CastPoint, HitChance, pos =  VP:GetCircularCastPosition(Target, SpellW.Delay, SpellW.Width, SpellW.Range, SpellW.Speed, myHero, false)
+		else
+			CastPoint, HitChance, pos =  VP:GetCircularCastPosition(Target, SpellW.Delay, SpellW.Width, SpellW.Range, SpellW.Speed, myHero, true)
+		end
+		if CastPoint ~= nil and HitChance ~= nil and pos ~= nil then
+			if GetDistance(CastPoint) < SpellW.Range and HitChance >= 1 then
+				CastSpell(_W, CastPoint.x, CastPoint.z)
+			end
 		end
 	end
 end
@@ -359,24 +370,24 @@ function OnAnimation(unit, animation)
 		]]
 		if Config.Combo then
 			if (Config.ComboSub.useQ and QReady) and target.type == myHero.type and not isBuffed and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLow() then -- Q combo
-				DelayAction(function() CastQ(target) end, animation_time + 0.1)
+				DelayAction(function() CastQ(target) end, Config.Extras.spellweavedelay)
 				if Config.Extras.Debug then
 					print('QChainedCombo')
 				end
 			elseif (Config.ComboSub.useW and WReady) and target.type == myHero.type and not isBuffed and not QReady and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLow() then -- W combo
-				DelayAction(function() CastW(target) end, animation_time + 0.1)
+				DelayAction(function() CastW(target) end, Config.Extras.spellweavedelay)
 				if Config.Extras.Debug then
 					print('WChainedCombo')
 				end
 			end
 		elseif Config.Harass then
 			if (Config.HarassSub.useQ and QReady) and target.type == myHero.type and not isBuffed  and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLowHarass() then -- Q Harass
-				DelayAction(function() CastQ(target) end, animation_time + 0.1)
+				DelayAction(function() CastQ(target) end, Config.Extras.spellweavedelay)
 				if Config.Extras.Debug then
 					print('QChainedHarass')
 				end
 			elseif (Config.HarassSub.useW and WReady) and target.type == myHero.type and not isBuffed  and not QReady and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLowHarass() then -- W Harass
-				DelayAction(function() CastW(target) end, animation_time + 0.1)
+				DelayAction(function() CastW(target) end, Config.Extras.spellweavedelay)
 				if Config.Extras.Debug then
 					print('WChainedHarass')
 				end
