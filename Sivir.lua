@@ -1,4 +1,4 @@
-local version = "0.09"
+local version = "0.1"
 --[[
 
 Free Sivir!
@@ -23,6 +23,9 @@ v0.07 - Added range limiter for Q and updated autoupdater.
 
 v0.08 - Added range limiter for Q in harass
 
+v0.09 - Github
+
+v0.1 - Fixes to KS
 ]]
 
 if myHero.charName ~= "Sivir" then return end
@@ -181,7 +184,7 @@ end
 
 
 function KS(Target)
-	if QReady and getDmg("Q", Target, myHero) < Target.health then
+	if QReady and getDmg("Q", Target, myHero) > Target.health then
 		CastQ(Target)
 	end
 end
