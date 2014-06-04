@@ -1,0 +1,22 @@
+Changelog
+
+6/4/2014 3:00AM EDT (GMT-5)
+    Lulu v0.02
+    Changes:
+    -Corrected bugs with E+Q casting when no enemies aroudn
+    -E+Q AoE farm implemented
+    -W sliders added for chase and gapcloser
+
+    Todo:
+    -Support mode
+    -Better W logic
+
+
+
+    Rumble v0.09
+    Changes:
+    -Corrected Q killsteal/force over heat mechanics
+
+
+
+
