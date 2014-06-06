@@ -1,6 +1,18 @@
 Changelog
 
 
+
+6/5/2014 10:23PM EDT (GMT-5)
+    Lulu v0.04:
+        Changes:
+            -Improved E+Q prediction slightly
+            -Fixed Prodiction 1.0 Errors
+            -Fixed AoE Farm errors and not casting AoE Farm when they were few creeps around
+            -Changed sampling of pix location -> now constantly updated
+            -Fully working support mode
+            -Added Sliders to Q and Extended Q to allow users to change distances 
+            -Kill Steal added
+
 6/4/2014 4:07PM EDT (GMT-5)
     Lulu v0.03
         Changes:
