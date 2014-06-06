@@ -1,6 +1,15 @@
 Changelog
 
 
+6/5/2014 11:21PM EDT (GMT-5)
+    Lulu v0.05:
+        Changes:
+            -Added Orbwalker support for flee mode
+            -Improved AoE Farm: Will now use E+Q far more often to clear creepwaves
+            -Added menu options for who to use Auto-Ult R on in combo mode
+            -Adjusted Q Prediction values. 
+            -Adjusted W usage in combo slightly. 
+            -Fixed bug where it was occasionally using the wrong delay in Combo Q
 
 6/5/2014 10:23PM EDT (GMT-5)
     Lulu v0.04:
@@ -38,8 +47,6 @@ Changelog
         Todo:
             -Support mode
             -Better W logic
-
-
 
     Rumble v0.09
         Changes:
