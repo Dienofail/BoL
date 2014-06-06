@@ -1,5 +1,17 @@
 Changelog
 
+Current known issues as of 6/6/2014 4:13AM EDT (GMT-5):
+    Lulu v0.07:
+        -Not properly evaluating all E+Q AoE opportunities.
+
+
+6/6/2014 4:13AM EDT (GMT-5)
+    Lulu v0.07:
+        Changes:
+            -Excluded enemy minions with less than E damage from swap consideration.
+            -Increased hitchance for swaps slightly, may experience slightly fewer E swaps.
+
+
 6/6/2014 1:55AM EDT (GMT-5)
     Lulu v0.06:
         Changes:
