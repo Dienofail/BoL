@@ -1,5 +1,10 @@
 Changelog
 
+6/6/2014 1:55AM EDT (GMT-5)
+    Lulu v0.06:
+        Changes:
+            -Fixed Extend Q with minion bug. 
+
 
 6/5/2014 11:21PM EDT (GMT-5)
     Lulu v0.05:
