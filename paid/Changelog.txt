@@ -1,13 +1,16 @@
 Changelog
 
 Current known issues as of 6/6/2014 4:13AM EDT (GMT-5):
-    Lulu Nightly v0.072:
+    Lulu:
         -Not properly evaluating Q+E AoE opportunities
         -Occasional Errors with support mode
         -Occasional Errors with Q not casting
 
 Nightly Versions:
 
+6/7/2014 6:49AM EDT (GMT-5)
+    Lulu Nightly v0.075:
+        -Fixed potential cause of not using Q until double F9 
 
 6/7/2014 5:53AM EDT (GMT-5)
     Lulu Nightly v0.074:
