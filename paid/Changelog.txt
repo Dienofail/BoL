@@ -1,82 +1,78 @@
 Changelog
 
 Current known issues as of 6/6/2014 4:13AM EDT (GMT-5):
-    Lulu v0.071:
+    Lulu Nightly v0.072:
         -Not properly evaluating Q+E AoE opportunities
-        -Poor W logic
         -Occasional Errors with support mode
 
 
+6/7/2014 2:31AM EDT (GMT-5)
+    Lulu Nightly v0.072:
+
+        -Improvements to W logic (now will properly use W as a gap closer if enemy is within 1200 range) in AP mode
+
 
 6/7/2014 2:31AM EDT (GMT-5)
-    Lulu v0.071:
+    Lulu Nightly v0.071:
         -New auth system installed. Should dramatically decrease the incidence of bugsplats. 
 
 
 
 6/6/2014 4:13AM EDT (GMT-5)
     Lulu v0.07:
-        Changes:
-            -Excluded enemy minions with less than E damage from swap consideration.
-            -Increased hitchance for swaps slightly, may experience slightly fewer E swaps.
+        -Excluded enemy minions with less than E damage from swap consideration.
+        -Increased hitchance for swaps slightly, may experience slightly fewer E swaps.
 
 
 6/6/2014 1:55AM EDT (GMT-5)
     Lulu v0.06:
-        Changes:
-            -Fixed Extend Q with minion bug. 
+        -Fixed Extend Q with minion bug. 
 
 
 6/5/2014 11:21PM EDT (GMT-5)
     Lulu v0.05:
-        Changes:
-            -Added Orbwalker support for flee mode
-            -Improved AoE Farm: Will now use E+Q far more often to clear creepwaves
-            -Added menu options for who to use Auto-Ult R on in combo mode
-            -Adjusted Q Prediction values. 
-            -Adjusted W usage in combo slightly. 
-            -Fixed bug where it was occasionally using the wrong delay in Combo Q
+        -Added Orbwalker support for flee mode
+        -Improved AoE Farm: Will now use E+Q far more often to clear creepwaves
+        -Added menu options for who to use Auto-Ult R on in combo mode
+        -Adjusted Q Prediction values. 
+        -Adjusted W usage in combo slightly. 
+        -Fixed bug where it was occasionally using the wrong delay in Combo Q
 
 6/5/2014 10:23PM EDT (GMT-5)
     Lulu v0.04:
-        Changes:
-            -Improved E+Q prediction slightly
-            -Fixed Prodiction 1.0 Errors
-            -Fixed AoE Farm errors and not casting AoE Farm when they were few creeps around
-            -Changed sampling of pix location -> now constantly updated
-            -Fully working support mode
-            -Added Sliders to Q and Extended Q to allow users to change distances 
-            -Kill Steal added
+        -Improved E+Q prediction slightly
+        -Fixed Prodiction 1.0 Errors
+        -Fixed AoE Farm errors and not casting AoE Farm when they were few creeps around
+        -Changed sampling of pix location -> now constantly updated
+        -Fully working support mode
+        -Added Sliders to Q and Extended Q to allow users to change distances 
+        -Kill Steal added
 
 6/4/2014 4:07PM EDT (GMT-5)
     Lulu v0.03
-        Changes:
-            -Slight adjustments to Q+E
-            -Changed default draw settings
-            -Increased sampling of Pix location -> may lead to slight lag increase; however, increased accuracy for predictions
+        -Slight adjustments to Q+E
+        -Changed default draw settings
+        -Increased sampling of Pix location -> may lead to slight lag increase; however, increased accuracy for predictions
             
 
 6/4/2014 12:18PM EDT (GMT-5)
     Rumble v0.10
-        Changes:
-            -Increased range of ult slightly for smart ult. Improved combo-ult logic slightly (still not recommended to turn on, use smart ult button instead)
+        -Increased range of ult slightly for smart ult. Improved combo-ult logic slightly (still not recommended to turn on, use smart ult button instead)
 
 
 
 6/4/2014 3:00AM EDT (GMT-5)
     Lulu v0.02
-        Changes:
-            -Corrected bugs with E+Q casting when no enemies around
-            -E+Q AoE farm implemented
-            -W sliders added for chase and gapcloser
+        -Corrected bugs with E+Q casting when no enemies around
+        -E+Q AoE farm implemented
+        -W sliders added for chase and gapcloser
 
         Todo:
-            -Support mode
-            -Better W logic
+        -Support mode
+        -Better W logic
 
     Rumble v0.09
-        Changes:
-            -Corrected Q killsteal/force over heat mechanics
+        -Corrected Q killsteal/force over heat mechanics
 
 
 
