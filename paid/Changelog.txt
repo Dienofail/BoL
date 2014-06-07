@@ -11,6 +11,15 @@ Nightly Versions:
 
 Release Versions:
 
+6/7/2014 10:31AM EDT (GMT-5):
+    Rumble v0.11:
+        -New auth system installed. Should dramatically decrease the incidence of bugsplats. Please disable firewalls/AntiVirus if you still bugsplat. IF YOU STILL BUGSPLAT AFTER THAT: CONTACT ME IN PERSON. 
+        -Added more cases where it will use R in combo
+        -Adjusted weighting of R slightly, it will now place the ult more on the enemy in single cast cases
+        -Added R KillSteal
+        -Fixed recall heat management bug
+
+
 6/7/2014 10:14AM EDT (GMT-5)
     Lulu v0.09:
         -Added checks to prevent vprediction Q misses
