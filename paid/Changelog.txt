@@ -7,43 +7,26 @@ Current known issues as of 6/6/2014 4:13AM EDT (GMT-5):
         -Occasional Errors with Q not casting
 
 Nightly Versions:
+    Lulu v0.08:
+        -Merged with release as of now.
 
-6/7/2014 9:01AM EDT (GMT-5)
-    Lulu Nightly v0.077:
-        -Fixed to Q accuracy
 
-6/7/2014 8:37AM EDT (GMT-5)
-    Lulu Nightly v0.076:
-        -Fixed Root Cause of AoEQ problems - AoEQ Farm and AoEQ in combo will now work far more often
-        -Fixed potential causes of low accuracy with vprediction
+Release Versions:
 
-6/7/2014 6:49AM EDT (GMT-5)
-    Lulu Nightly v0.075:
-        -Fixed potential cause of not using Q until double F9 
-
-6/7/2014 5:53AM EDT (GMT-5)
-    Lulu Nightly v0.074:
+6/7/2014 9:16AM EDT (GMT-5)
+    Lulu Nightly + Lulu Release v0.08:
+        -New auth system installed. Should dramatically decrease the incidence of bugsplats. Please disable firewalls/AntiVirus if you still bugsplat. IF YOU STILL BUGSPLAT AFTER THAT: CONTACT ME IN PERSON. 
+        -Improvements to W logic (now will properly use W as a gap closer if enemy is within 1200 range) in AP mode
+        -Added orbwalker functionality to harass mode (default off)
+        -Added separate mana slider for harass mode only (separate from the extra configs).
         -Changed how the W system works. There's now two more customizability.
         -Introduced a new hotkey that Ws the closest enemy
         -Changed the Distance to Enemy for W Enemy slider to Minimum Distance to Enemy for W Enemy. Now if the distance to enemy is greater than this number, then it will cast W.
         -Added toggle for selecting which enemies to use W on in combo
         -Added ignite KS
-
-6/7/2014 5:14AM EDT (GMT-5)
-    Lulu Nightly v0.073:
-        -Added orbwalker functionality to harass mode (default off)
-        -Added separate mana slider for harass mode only (separate from the extra configs).
-
-6/7/2014 4:31AM EDT (GMT-5)
-    Lulu Nightly v0.072:
-        -Improvements to W logic (now will properly use W as a gap closer if enemy is within 1200 range) in AP mode
-
-6/7/2014 2:31AM EDT (GMT-5)
-    Lulu Nightly v0.071:
-        -New auth system installed. Should dramatically decrease the incidence of bugsplats. 
-
-
-Release Versions:
+        -Fixed potential cause of not using Q until double F9 
+        -Fixed Root Cause of AoEQ problems - AoEQ Farm and AoEQ in combo will now work far more often
+        -Fixed potential causes of low accuracy with vprediction
 
 
 6/6/2014 4:13AM EDT (GMT-5)
