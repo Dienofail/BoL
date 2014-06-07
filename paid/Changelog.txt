@@ -17,9 +17,9 @@ Release Versions:
         -Improvements to W logic (now will properly use W as a gap closer if enemy is within 1200 range) in AP mode
         -Added orbwalker functionality to harass mode (default off)
         -Added separate mana slider for harass mode only (separate from the extra configs).
-        -Changed how the W system works. There's now two more customizability.
+        -Changed how the W system works. There's now more customizability.
         -Introduced a new hotkey that Ws the closest enemy
-        -Changed the Distance to Enemy for W Enemy slider to Minimum Distance to Enemy for W Enemy. Now if the distance to enemy is greater than this number, then it will cast W.
+        -Changed the Distance to Enemy for W Enemy slider to Minimum Distance to Enemy for W Enemy. Now if the distance to enemy is greater than this number, then it will cast W to enemy. Lowered default value to adjust for the change.
         -Added toggle for selecting which enemies to use W on in combo
         -Added ignite KS
         -Fixed potential cause of not using Q until double F9 
