@@ -183,7 +183,7 @@ function Menu()
 	Config.Extras:addParam("ESlows", "E Slows", SCRIPT_PARAM_ONOFF, true)
 	Config.Extras:addParam("CheckQ", "Check Q Using Minions", SCRIPT_PARAM_ONOFF, true)
 	Config.Extras:addParam("AoEQ", "Check AoE Q", SCRIPT_PARAM_ONOFF, true)
-	Config.Extras:addParam("spellweavedelay", "Spell Wave Delay (S)", SCRIPT_PARAM_SLICE, 0.3, 0, 1, 0)
+	Config.Extras:addParam("spellweavedelay", "Spell Wave Delay (S)", SCRIPT_PARAM_SLICE, 0.6, 0, 1, 0)
 	Config.Extras:addParam("wcollision", "Collision on W", SCRIPT_PARAM_ONOFF, false)
 	--Permashow
 	Config:permaShow("Combo")

@@ -1,8 +1,17 @@
 Changelog
 
 Current known issues as of 6/6/2014 4:13AM EDT (GMT-5):
-    Lulu v0.07:
-        -Not properly evaluating all E+Q AoE opportunities.
+    Lulu v0.071:
+        -Not properly evaluating Q+E AoE opportunities
+        -Poor W logic
+        -Occasional Errors with support mode
+
+
+
+6/7/2014 2:31AM EDT (GMT-5)
+    Lulu v0.071:
+        -New auth system installed. Should dramatically decrease the incidence of bugsplats. 
+
 
 
 6/6/2014 4:13AM EDT (GMT-5)
