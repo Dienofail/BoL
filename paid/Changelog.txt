@@ -8,6 +8,12 @@ Current known issues as of 6/6/2014 4:13AM EDT (GMT-5):
 
 Nightly Versions:
 
+6/7/2014 8:37AM EDT (GMT-5)
+    Lulu Nightly v0.076:
+        -Fixed Root Cause of AoEQ problems - AoEQ Farm and AoEQ in combo will now work far more often
+        -Fixed potential causes of low accuracy with vprediction
+
+
 6/7/2014 6:49AM EDT (GMT-5)
     Lulu Nightly v0.075:
         -Fixed potential cause of not using Q until double F9 
