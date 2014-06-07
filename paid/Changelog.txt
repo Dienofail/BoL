@@ -4,11 +4,17 @@ Current known issues as of 6/6/2014 4:13AM EDT (GMT-5):
     Lulu Nightly v0.072:
         -Not properly evaluating Q+E AoE opportunities
         -Occasional Errors with support mode
+        -Occasional Errors with Q not casting
 
 
-6/7/2014 2:31AM EDT (GMT-5)
+6/7/2014 5:14AM EDT (GMT-5)
+    Lulu Nightly v0.073:
+        -Added orbwalker functionality to harass mode (default off)
+        -Added separate mana slider for harass mode only (separate from the extra configs).
+
+
+6/7/2014 4:31AM EDT (GMT-5)
     Lulu Nightly v0.072:
-
         -Improvements to W logic (now will properly use W as a gap closer if enemy is within 1200 range) in AP mode
 
 
