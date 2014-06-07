@@ -6,22 +6,32 @@ Current known issues as of 6/6/2014 4:13AM EDT (GMT-5):
         -Occasional Errors with support mode
         -Occasional Errors with Q not casting
 
+Nightly Versions:
+
+
+6/7/2014 5:53AM EDT (GMT-5)
+    Lulu Nightly v0.074:
+        -Changed how the W system works. There's now two more customizability.
+        -Introduced a new hotkey that Ws the closest enemy
+        -Changed the Distance to Enemy for W Enemy slider to Minimum Distance to Enemy for W Enemy. Now if the distance to enemy is greater than this number, then it will cast W.
+        -Added toggle for selecting which enemies to use W on in combo
+        -Added ignite KS
 
 6/7/2014 5:14AM EDT (GMT-5)
     Lulu Nightly v0.073:
         -Added orbwalker functionality to harass mode (default off)
         -Added separate mana slider for harass mode only (separate from the extra configs).
 
-
 6/7/2014 4:31AM EDT (GMT-5)
     Lulu Nightly v0.072:
         -Improvements to W logic (now will properly use W as a gap closer if enemy is within 1200 range) in AP mode
-
 
 6/7/2014 2:31AM EDT (GMT-5)
     Lulu Nightly v0.071:
         -New auth system installed. Should dramatically decrease the incidence of bugsplats. 
 
+
+Release Versions:
 
 
 6/6/2014 4:13AM EDT (GMT-5)
@@ -29,11 +39,9 @@ Current known issues as of 6/6/2014 4:13AM EDT (GMT-5):
         -Excluded enemy minions with less than E damage from swap consideration.
         -Increased hitchance for swaps slightly, may experience slightly fewer E swaps.
 
-
 6/6/2014 1:55AM EDT (GMT-5)
     Lulu v0.06:
         -Fixed Extend Q with minion bug. 
-
 
 6/5/2014 11:21PM EDT (GMT-5)
     Lulu v0.05:
