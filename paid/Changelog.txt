@@ -11,6 +11,11 @@ Nightly Versions:
 
 Release Versions:
 
+6/7/2014 10:14AM EDT (GMT-5)
+    Lulu v0.09:
+        -Added checks to prevent vprediction Q misses
+
+
 6/7/2014 9:16AM EDT (GMT-5)
     Lulu Nightly + Lulu Release v0.08:
         -New auth system installed. Should dramatically decrease the incidence of bugsplats. Please disable firewalls/AntiVirus if you still bugsplat. IF YOU STILL BUGSPLAT AFTER THAT: CONTACT ME IN PERSON. 
