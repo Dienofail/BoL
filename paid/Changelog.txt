@@ -2,9 +2,7 @@ Changelog
 
 Current known issues as of 6/6/2014 4:13AM EDT (GMT-5):
     Lulu:
-        -Not properly evaluating Q+E AoE opportunities
-        -Occasional Errors with support mode
-        -Occasional Errors with Q not casting
+        -Occasional issues with support mode
 
 Nightly Versions:
     Lulu v0.08:
