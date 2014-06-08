@@ -20,6 +20,7 @@ Release Versions:
         -E+Q extension and E alone options added for harass mode
         -Slight fix for harass mode
         -Fixed W toggle in harass mode, it is now functional.
+        -DDevs now automatically auth, there's also a surprise waiting for you, if you catch my drift :D. 
 
 
 6/8/2014 1:33PM EDT (GMT-5):
