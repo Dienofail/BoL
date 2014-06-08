@@ -3,6 +3,7 @@ Changelog
 Current known issues as of 6/6/2014 4:13AM EDT (GMT-5):
     Lulu:
         -Occasional issues with support mode
+        -VPrediction irelia message occasionally pops up after auth. This is a harmless issue and I think has to do with what the auth is returning (I share same auth platform with team funhouse, so that's probably why). I'm 99% sure this is irrelevant and you can safely ignore this message. 
 
 Nightly Versions:
     Lulu v0.08:
@@ -10,6 +11,16 @@ Nightly Versions:
 
 
 Release Versions:
+
+6/8/2014 7:19PM EDT (GMT-5):
+    Lulu v0.11:
+        -Support orbwalker and target selection now fully repaired
+        -Increased the distance Lulu has to be away from you before it includes her in Q calculations (to prevent really random Qs)
+        -AoE slider for Q+E minion clear should now be fully functional
+        -E+Q extension and E alone options added for harass mode
+        -Slight fix for harass mode
+        -Fixed W toggle in harass mode, it is now functional.
+
 
 6/8/2014 1:33PM EDT (GMT-5):
     Lulu v0.10:
