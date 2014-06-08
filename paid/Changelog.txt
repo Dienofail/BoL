@@ -11,6 +11,13 @@ Nightly Versions:
 
 Release Versions:
 
+6/8/2014 1:33PM EDT (GMT-5):
+    Lulu v0.10:
+        -Toggle mode added for harass spell cast (no orbwalking). Need to reload once checked
+        -Added minimum number of creeps slider for AoE farm spell cast
+        -Added mana checks and priotization for W in flee mode
+        -Fixed support mode error messages and E/R usage
+
 6/7/2014 10:31AM EDT (GMT-5):
     Rumble v0.11:
         -New auth system installed. Should dramatically decrease the incidence of bugsplats. Please disable firewalls/AntiVirus if you still bugsplat. IF YOU STILL BUGSPLAT AFTER THAT: CONTACT ME IN PERSON. 
