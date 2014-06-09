@@ -12,6 +12,10 @@ Nightly Versions:
 
 Release Versions:
 
+6/8/2014 9:59PM EDT (GMT-5):
+    Lulu v0.12:
+        -Disabling use E on self in farm mode will no longer cause AoE E+Q to stop working.
+
 6/8/2014 7:19PM EDT (GMT-5):
     Lulu v0.11:
         -Support orbwalker and target selection now fully repaired
