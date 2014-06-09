@@ -1,4 +1,4 @@
-local version = "1.17"
+local version = "1.18"
 --[[
 
 Free Lucian!
@@ -60,6 +60,8 @@ v1.15 - Fixes to config errors
 v1.16 - Added slider for animation delay and toggle for W collision
 
 v1.17 - Fixes
+
+v1.18 - Slider fixes
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -183,7 +185,7 @@ function Menu()
 	Config.Extras:addParam("ESlows", "E Slows", SCRIPT_PARAM_ONOFF, true)
 	Config.Extras:addParam("CheckQ", "Check Q Using Minions", SCRIPT_PARAM_ONOFF, true)
 	Config.Extras:addParam("AoEQ", "Check AoE Q", SCRIPT_PARAM_ONOFF, true)
-	Config.Extras:addParam("spellweavedelay", "Spell Wave Delay (S)", SCRIPT_PARAM_SLICE, 0.6, 0, 1, 0)
+	Config.Extras:addParam("spellweavedelay", "Spell Wave Delay (S)", SCRIPT_PARAM_SLICE, 0.6, 0.2, 1.5, 0)
 	Config.Extras:addParam("wcollision", "Collision on W", SCRIPT_PARAM_ONOFF, false)
 	--Permashow
 	Config:permaShow("Combo")
