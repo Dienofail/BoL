@@ -12,6 +12,11 @@ Nightly Versions:
 
 Release Versions:
 
+6/9/2014 10:23PM EDT (GMT-5):
+    Lulu v0.13:
+        -All support mode issues fixed
+        -Fixed using R on allies outside of support mode if Allow min R health % outside of support is checked.
+
 
 6/9/2014 8:23PM EDT (GMT-5):
     Rumble v0.12:
