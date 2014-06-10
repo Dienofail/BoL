@@ -12,6 +12,12 @@ Nightly Versions:
 
 Release Versions:
 
+
+6/9/2014 8:23PM EDT (GMT-5):
+    Rumble v0.12:
+        -Increased the angle at which you can face the enemy before casting Q from 30 degrees to 45 degrees
+        -Now should cast 2nd E far more frequently in flee mode (still hitchance requirement etc)
+
 6/8/2014 9:59PM EDT (GMT-5):
     Lulu v0.12:
         -Disabling use E on self in farm mode will no longer cause AoE E+Q to stop working.
