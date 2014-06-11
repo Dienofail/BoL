@@ -12,6 +12,10 @@ Nightly Versions:
 
 Release Versions:
 
+6/10/2014 10:20PM EDT (GMT-5):
+    Lulu v0.14:
+        -Added a last hit toggle to farm mode, where the "minimum minions hit slider" value will only take into account minions that are able to be killed with 1 autoattack or less. The minions minimum slider has to be set above 2. 
+
 6/9/2014 10:23PM EDT (GMT-5):
     Lulu v0.13:
         -All support mode issues fixed
