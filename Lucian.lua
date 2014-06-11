@@ -1,4 +1,4 @@
-local version = "1.18"
+local version = "1.19"
 --[[
 
 Free Lucian!
@@ -62,6 +62,8 @@ v1.16 - Added slider for animation delay and toggle for W collision
 v1.17 - Fixes
 
 v1.18 - Slider fixes
+
+v1.19 - Reverted changes to spellweaving introudced in v1.16
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -374,24 +376,24 @@ function OnAnimation(unit, animation)
 		]]
 		if Config.Combo then
 			if (Config.ComboSub.useQ and QReady) and target.type == myHero.type and not isBuffed and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLow() then -- Q combo
-				DelayAction(function() CastQ(target) end, Config.Extras.spellweavedelay)
+				DelayAction(function() CastQ(target) end, animation_time + 0.05)
 				if Config.Extras.Debug then
 					print('QChainedCombo')
 				end
 			elseif (Config.ComboSub.useW and WReady) and target.type == myHero.type and not isBuffed and not QReady and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLow() then -- W combo
-				DelayAction(function() CastW(target) end, Config.Extras.spellweavedelay)
+				DelayAction(function() CastW(target) end, animation_time + 0.05)
 				if Config.Extras.Debug then
 					print('WChainedCombo')
 				end
 			end
 		elseif Config.Harass then
 			if (Config.HarassSub.useQ and QReady) and target.type == myHero.type and not isBuffed  and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLowHarass() then -- Q Harass
-				DelayAction(function() CastQ(target) end, Config.Extras.spellweavedelay)
+				DelayAction(function() CastQ(target) end, animation_time + 0.05)
 				if Config.Extras.Debug then
 					print('QChainedHarass')
 				end
 			elseif (Config.HarassSub.useW and WReady) and target.type == myHero.type and not isBuffed  and not QReady and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLowHarass() then -- W Harass
-				DelayAction(function() CastW(target) end, Config.Extras.spellweavedelay)
+				DelayAction(function() CastW(target) end, animation_time + 0.05)
 				if Config.Extras.Debug then
 					print('WChainedHarass')
 				end
