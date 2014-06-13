@@ -12,6 +12,12 @@ Nightly Versions:
 
 Release Versions:
 
+6/12/2014 10:34PM EDT (GMT-5):
+    Lulu v0.15:
+        -Backup method of detecting Pix added - should decreases cases where Q isn't casting
+        -Lasthit options only for farm removed - just causing unnecessary confusion when users were checking it
+        -Small fixes to farm usage. 
+
 6/12/2014 2:36AM EDT (GMT-5):
     Zac v0.01:
         -Zac Beta release. 
