@@ -1,4 +1,4 @@
-local version = "0.10"
+local version = "0.11"
 --[[
 
 Free KogMaw!
@@ -26,6 +26,8 @@ v0.08 - Github
 v0.09 - Added auto ult on 100% hit
 
 v0.10 - Corrected ult values - credit to acomma for helping me find better values!
+
+v0.11 - T[RUS] R Values
 ]]
 
 if myHero.charName ~= "KogMaw" then return end
@@ -70,7 +72,7 @@ local VP = VPrediction()
 local SpellQ = {Speed = 1550, Range = 925, Delay = 0.3667, Width = 60}
 local SpellW = {Speed = 1600, Range = 1000, Delay = 0.111, Width = 55}
 local SpellE = {Speed = 1400, Range = 1280, Delay = 0.066, Width = 120}
-local SpellR = {Width = 10, Speed = math.huge, Delay= 0.8}
+local SpellR = {Width = 150, Speed = math.huge, Delay= 1.1}
 local RRangeTable = {1400, 1700, 2200}
 local WRange, RRange = nil, nil 
 local QReady, WReady, EReady, RReady = nil, nil, nil, nil 
