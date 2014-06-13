@@ -12,6 +12,12 @@ Nightly Versions:
 
 Release Versions:
 
+6/13/2014 10:13AM EDT (GMT-5):
+    Zac v0.02:
+        -Open access enabled until v0.03 due to auth issues. 
+    Lulu v0.16: 
+        -Fixes to harass E toggle
+
 6/12/2014 10:34PM EDT (GMT-5):
     Lulu v0.15:
         -Backup method of detecting Pix added - should decreases cases where Q isn't casting
@@ -35,6 +41,7 @@ Release Versions:
 
 6/9/2014 8:23PM EDT (GMT-5):
     Rumble v0.12:
+    
         -Increased the angle at which you can face the enemy before casting Q from 30 degrees to 45 degrees
         -Now should cast 2nd E far more frequently in flee mode (still hitchance requirement etc)
 
