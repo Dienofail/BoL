@@ -12,6 +12,10 @@ Nightly Versions:
 
 Release Versions:
 
+6/13/2014 1:59PM EDT (GMT-5):
+    Zac v0.04:
+        -Adjustments to open access
+
 6/13/2014 12:54PM EDT (GMT-5):
     Zac v0.03:
         -Fixed harass and combo skill toggles 
