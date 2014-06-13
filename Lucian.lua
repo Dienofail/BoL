@@ -1,4 +1,4 @@
-local version = "1.19"
+local version = "1.20"
 --[[
 
 Free Lucian!
@@ -64,10 +64,35 @@ v1.17 - Fixes
 v1.18 - Slider fixes
 
 v1.19 - Reverted changes to spellweaving introudced in v1.16
+
+v1.20 - Prod 1.0 option added
 ]]
 
 if myHero.charName ~= "Lucian" then return end
 require 'VPrediction'
+
+local ProdOneLoaded = false
+local ProdFile = LIB_PATH .. "Prodiction.lua"
+local fh = io.open(ProdFile, 'r')
+if fh ~= nil then
+  local line = fh:read()
+  local Version = string.match(line, "%d+.%d+")
+  if Version == nil or tonumber(Version) == nil then
+    ProdOneLoaded = false
+  elseif tonumber(Version) > 0.8 then
+    ProdOneLoaded = true
+  end
+  if ProdOneLoaded then
+    require 'Prodiction'
+    print("<font color=\"#FF0000\">Prodiction 1.0 Loaded for DienoLucian, 1.0 option is usable</font>")
+  else
+    print("<font color=\"#FF0000\">Prodiction 1.0 not detected for DienoLucian, 1.0 is not usable (will cause errors if checked)</font>")
+  end
+else
+  print("<font color=\"#FF0000\">No Prodiction.lua detected, using only VPRED</font>")
+end
+
+print("<font color=\"#FF0000\">DienoLucian: Please save file exactly as Lulu.lua in Scripts folder for autoupdater to work</font>")
 
 --Honda7
 local AUTOUPDATE= true
@@ -189,6 +214,9 @@ function Menu()
 	Config.Extras:addParam("AoEQ", "Check AoE Q", SCRIPT_PARAM_ONOFF, true)
 	Config.Extras:addParam("spellweavedelay", "Spell Wave Delay (S)", SCRIPT_PARAM_SLICE, 0.6, 0.2, 1.5, 0)
 	Config.Extras:addParam("wcollision", "Collision on W", SCRIPT_PARAM_ONOFF, false)
+	if ProdOneLoaded then
+		Config.Extras:addParam("Prodiction", "Use Prodiction 1.0 instead of VPred", SCRIPT_PARAM_ONOFF, false)
+	end
 	--Permashow
 	Config:permaShow("Combo")
 	Config:permaShow("Farm")
@@ -317,7 +345,7 @@ end
 
 function LockR(Target)
 	if isPressedR then
-		local _, _, TargetPos =  VP:GetLineCastPosition(enemy, SpellR.Delay, SpellR.Width, SpellR.Range, SpellR.Speed, myHero, false)
+		local _, _, TargetPos =  CombinedPredict(enemy, SpellR.Delay, SpellR.Width, SpellR.Range, SpellR.Speed, myHero, false)
 		local UnitVector1 = Vector(myHero) + Vector(REndPos):perpendicular()*650
 		local UnitVector2 = Vector(myHero) + Vector(REndPos):perpendicular2()*650
 		local pointSegment1, pointLine1, isOnSegment = VectorPointProjectionOnLineSegment(Vector(myHero), Vector(UnitVector1), Vector(TargetPos))
@@ -456,7 +484,7 @@ function GetEnemiesHitByQ(startpos, endpos)
 		end
 		for idx, enemy in ipairs(Enemies) do
 			if enemy ~= nil and ValidTarget(enemy, 1600) and not enemy.dead and GetDistance(enemy, startpos) < SpellQ.ExtendedRange then
-				local throwaway, HitChance, PredictedPos = VP:GetLineCastPosition(enemy, SpellQ.Delay, SpellQ.Width, SpellQ.ExtendedRange, SpellQ.Speed, myHero, false)
+				local throwaway, HitChance, PredictedPos = CombinedPredict(enemy, SpellQ.Delay, SpellQ.Width, SpellQ.ExtendedRange, SpellQ.Speed, myHero, false)
 				local pointSegment, pointLine, isOnSegment = VectorPointProjectionOnLineSegment(Vector(startpos), Vector(realendpos), Vector(PredictedPos))
 				local pointSegment3D = {x=pointSegment.x, y=enemy.y, z=pointSegment.y}
 				if isOnSegment and pointSegment3D ~= nil and GetDistance(pointSegment3D, PredictedPos) < VP:GetHitBox(enemy) + SpellQ.Width - 30 and HitChance >= 2 then
@@ -488,7 +516,7 @@ function FindBestCastPosition(Target)
 		local BestHit = 0
 		for idx, enemy in ipairs(Enemies) do
 			if not enemy.dead and ValidTarget(enemy) and GetDistance(enemy) < SpellQ.Range then
-				local position, hitchance = VP:GetPredictedPos(enemy, SpellQ.Delay, math.huge, myHero, false)
+				local position, hitchance = CombinedPos(enemy, SpellQ.Delay, math.huge, myHero, false)
 				--print(position)
 				local count, hitmain = GetEnemiesHitByQ(myHero, position)
 				if hitmain and hitchance >= 1 then 
@@ -509,7 +537,7 @@ function FindBestCastPosition(Target)
 			end
 			for i, minion in ipairs(EnemyMinions.objects) do
 				if GetDistance(minion) < SpellQ.Range then
-					local position, hitchance = VP:GetPredictedPos(minion, SpellQ.Delay, math.huge, myHero, false)
+					local position, hitchance = CombinedPos(minion, SpellQ.Delay, math.huge, myHero, false)
 					-- local waypoints = VP:GetCurrentWayPoints(minion)
 					-- local MPos, CastPosition = #waypoints == 1 and Vector(minion.visionPos) or VP:CalculateTargetPosition(minion, SpellQ.Delay, SpellQ.Width, SpellQ.Speed, myHero, "line")
 					local count, hitmain = GetEnemiesHitByQ(myHero, Vector(position))
@@ -776,3 +804,34 @@ function CountEnemyNearPerson(person,vrange)
     return count
 end
 --End Credit Xetrok
+
+function CombinedPredict(Target, Delay, Width, Range, Speed, myHero, Collision)
+  if Target == nil or Target.dead or not ValidTarget(Target) then return end
+  if not ProdOneLoaded or not Config.Extras.Prodiction then
+    local CastPosition, Hitchance, Position = VP:GetLineCastPosition(Target, Delay, Width, Range, Speed, myHero, false)
+    if CastPosition ~= nil and Hitchance >= 1 then 
+      return CastPosition, Hitchance+1, Position
+    end
+  elseif ProdOneLoaded and Config.Extras.Prodiction then
+    CastPosition, info = Prodiction.GetPrediction(Target, Range, Speed, Delay, Width, myHero)
+    if info ~= nil and info.hitchance ~= nil and CastPosition ~= nil then 
+      Hitchance = info.hitchance
+      return CastPosition, Hitchance, CastPosition
+    end
+  end
+end
+
+
+function CombinedPos(Target, Delay, Speed, myHero, Collision)
+  if Target == nil or Target.dead or not ValidTarget(Target) then return end
+  if Collision == nil then Collision = false end
+    if not ProdOneLoaded or not Config.Extras.Prodiction then
+      local PredictedPos, HitChance = VP:GetPredictedPos(Target, Delay, Speed, myHero, Collision)
+      return PredictedPos, HitChance
+    elseif ProdOneLoaded and Config.Extras.Prodiction then
+      local PredictedPos, info = Prodiction.GetPrediction(Target, 20000, Speed, Delay, 1, myHero)
+      if PredictedPos ~= nil and info ~= nil and info.hitchance ~= nil then
+        return PredictedPos, info.hitchance
+      end
+    end
+  end
