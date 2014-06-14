@@ -12,6 +12,10 @@ Nightly Versions:
 
 Release Versions:
 
+6/14/2014 6:31PM EDT (GMT-5):
+    Zac v0.05:
+        -Adjustments to open access
+
 6/13/2014 1:59PM EDT (GMT-5):
     Zac v0.04:
         -Adjustments to open access
