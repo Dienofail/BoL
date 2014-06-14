@@ -1,4 +1,4 @@
-local version = "1.20"
+local version = "1.21"
 --[[
 
 Free Lucian!
@@ -66,6 +66,8 @@ v1.18 - Slider fixes
 v1.19 - Reverted changes to spellweaving introudced in v1.16
 
 v1.20 - Prod 1.0 option added
+
+v1.21 - Fixed some messages
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -92,7 +94,6 @@ else
   print("<font color=\"#FF0000\">No Prodiction.lua detected, using only VPRED</font>")
 end
 
-print("<font color=\"#FF0000\">DienoLucian: Please save file exactly as Lulu.lua in Scripts folder for autoupdater to work</font>")
 
 --Honda7
 local AUTOUPDATE= true
