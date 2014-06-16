@@ -12,6 +12,11 @@ Nightly Versions:
 
 Release Versions:
 
+6/15/2014 9:13PM EDT (GMT-5):
+    Zac v0.06: 
+        -Small fixes to Zac Q
+        -New auth system installed
+
 6/14/2014 6:31PM EDT (GMT-5):
     Zac v0.05:
         -Adjustments to open access
