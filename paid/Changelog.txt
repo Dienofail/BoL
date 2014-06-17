@@ -12,6 +12,11 @@ Nightly Versions:
 
 Release Versions:
 
+6/16/2014 9:33PM EDT (GMT-5):
+    Zac v0.07:
+        -Zac E will not instant cast as frequenty as before 
+        -You will need to turn off any scripts that send movement packets (MMA/SAC:R) or E will bug out. 
+
 6/15/2014 9:13PM EDT (GMT-5):
     Zac v0.06: 
         -Small fixes to Zac Q
