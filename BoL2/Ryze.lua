@@ -9,7 +9,8 @@ local QRange = 625
 local WRange = 600
 local ERange = 600
 
-Callback.Bind("Load", function() 
+Callback.Bind("Load", function()
+    if myHero.charName ~= 'Ryze' then return end 
     Config = AddonConfig.Create('DienoRyze');
     Config {     
     Config.Section('Keys') {
