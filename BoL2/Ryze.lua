@@ -36,11 +36,6 @@ Callback.Bind("Load", function()
         Config.Boolean('Use R', true),
         --Config.Boolean('Orbwalk', true),      
                         },
-    Config.Section('Draw') {
-        Config.Boolean('Draw Q', true),
-        Config.Boolean('Draw E', true),
-        Config.Boolean('Draw W', true),           
-                        },
     }
 end)
 
