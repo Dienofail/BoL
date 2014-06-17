@@ -12,6 +12,10 @@ Nightly Versions:
 
 Release Versions:
 
+6/16/2014 10:12PM EDT (GMT-5):
+    Zac v0.08:
+        -Fixes to E short casting.
+
 6/16/2014 9:33PM EDT (GMT-5):
     Zac v0.07:
         -Zac E will not instant cast as frequenty as before 
