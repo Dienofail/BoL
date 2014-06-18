@@ -12,6 +12,10 @@ Nightly Versions:
 
 Release Versions:
 
+6/18/14 9:41 AM EDT (GMT-5):
+    Lulu v0.17:
+        -Fixed harass E+Q issues.
+ 
 6/16/2014 10:12PM EDT (GMT-5):
     Zac v0.08:
         -Fixes to E short casting.
