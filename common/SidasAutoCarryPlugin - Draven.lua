@@ -1,4 +1,4 @@
-local version = "0.04"
+local version = "0.05"
 
 --[[
 
@@ -35,6 +35,9 @@ v0.03d - Added disable movement near reticle option
 
 
 v0.04 - Added github autoupdater.
+
+
+v0.05 - Updated Q name 
 
 ]]
 
@@ -305,7 +308,7 @@ function Plugin:OnCreateObj(obj)
     -- end
                
     if obj ~= nil and obj.name ~= nil and obj.x ~= nil and obj.z ~= nil then
-        if obj.name == "Draven_Q_reticle_self.troy" then
+        if obj.name == "Draven_Q_reticle_self.troy" or obj.name == 'Q_reticle_self' or obj.name == 'Q_reticle_self.troy' then
         	if Menu.Debug then
         		print('Draven Q reticle created')
         	end
@@ -327,7 +330,7 @@ end
 
 function Plugin:OnDeleteObj(obj)
 	--Credit to Sida
-	if obj.name == "Draven_Q_reticle_self.troy" then
+	if obj.name == "Draven_Q_reticle_self.troy" or obj.name == 'Q_reticle_self' or obj.name == 'Q_reticle_self.troy' then
         if GetDistance(obj) > qRadius then
             qStacks = qStacks - 1
             if Menu.Debug2 then
