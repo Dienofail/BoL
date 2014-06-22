@@ -439,8 +439,10 @@ function EGapClosers()
 end
 
 function ShouldCastHammerE(Target)
-    if not Config.Extras.SmartE then
+    if not Config.Extras.SmartE and not CheckWBuffStatus() then
         return true
+    elseif not Config.Extras.SmartE and CheckWBuffStatus() then
+        return false
     else
 
         if CheckWBuffStatus() then 
