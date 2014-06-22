@@ -1,81 +1,89 @@
-local version = "0.17"
+local version = "1.0"
 --[[
-Jayce, Hammer Time
+Jayce, Hammer Time - VIP Version
 
 by Dienofail
 
 Changelog:
 
-v0.01 - release
 
-v0.02 - some fixes to form swapping.
 
-v0.03 - updated some delay values
 
-v0.04 - removed some bugsplatting code for now...
+v1.0 - MAJOR REWRITE - VIP ONLY COMPATIBLE. OLD SCRIPT CAN BE FOUND AS JAYCE.LUA
 
-v0.05 - Added option to do Q then E combo (Force E before Q = false in Extra configs, turn to true to have v0.04 settings), Fixed Q gap closing bug (now will do so at full range), Added better form swapping logic. Added slider to set distance to enemy to swap to melee (was 650, now user-dictated)
 
-v0.06 - Forces target to be in range for ranged W to activate (600)
-
-v0.07 - added hammer Q+E killtext, maybe fixed some stuff for non-VIP usage
-
-v0.08 - added W as an auto-attack reset (MMA/Reborn compatible, not sure about revamped)
-
-v0.09 - Further fixes to non-VIP
-
-v0.10 - Further fixes to non-VIP
-
-v0.11 - Farm beta included (may not be working)
-
-v0.12 - Typo fixed
-
-v0.13 - Now will no longer cast hammer E if W status is active if consume W config setting is true
-
-v0.14 - Added Ignite KS.
-
-v0.15 - Added compatibility to vpred 2.404 
-
-v0.16 - Github
-
-v0.17 - Fixes to CD calculations
 
 ]]
 
 if myHero.charName ~= "Jayce" then return end
-if VIP_USER then
-    require 'VPrediction'
+require 'VPrediction'
+
+
+local ProdOneLoaded = false
+local ProdFile = LIB_PATH .. "Prodiction.lua"
+local fh = io.open(ProdFile, 'r')
+if fh ~= nil then
+  local line = fh:read()
+  local Version = string.match(line, "%d+.%d+")
+  if Version == nil or tonumber(Version) == nil then
+    ProdOneLoaded = false
+  elseif tonumber(Version) > 0.8 then
+    ProdOneLoaded = true
+  end
+  if ProdOneLoaded then
+    require 'Prodiction'
+    print("<font color=\"#FF0000\">Prodiction 1.0+ Loaded for DienoJayce, 1.0+ option is usable</font>")
+  else
+    print("<font color=\"#FF0000\">Prodiction 1.0+ not detected for DienoJayce, 1.0+ is not usable (will cause errors if checked)</font>")
+  end
+else
+  print("<font color=\"#FF0000\">No Prodiction.lua detected, using only VPRED</font>")
 end
 
-local autoupdateenabled = true
+function checkOrbwalker()
+    if _G.MMA_Loaded ~= nil and _G.MMA_Loaded then
+        IsMMALoaded = true
+        print('MMA detected')
+    elseif _G.AutoCarry then
+        IsSACLoaded = true
+        print('SAC detected')
+    elseif FileExist(LIB_PATH .."SOW.lua") then
+        require "SOW"
+        SOWi = SOW(VP)
+        IsSowLoaded = true
+        SOWi:RegisterAfterAttackCallback(AutoAttackReset)
+        print('SOW loaded')
+    else
+        print('Please use SAC, MMA, or SOW for your orbwalker')
+    end
+end
+
+local AUTOUPDATE= true
 local UPDATE_SCRIPT_NAME = "Jayce"
+local UPDATE_NAME = "Jayce"
 local UPDATE_HOST = "raw.github.com"
-local UPDATE_PATH = "/Dienofail/BoL/master/Jayce.lua"
+local UPDATE_PATH = "/Dienofail/BoL/master/JayceVIP.lua".."?rand="..math.random(1,10000)
 local UPDATE_FILE_PATH = SCRIPT_PATH..GetCurrentEnv().FILE_NAME
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
-local ServerData
-if autoupdateenabled then
-    GetAsyncWebResult(UPDATE_HOST, UPDATE_PATH, function(d) ServerData = d end)
-    function update()
-        if ServerData ~= nil then
-            local ServerVersion
-            local send, tmp, sstart = nil, string.find(ServerData, "local version = \"")
-            if sstart then
-                send, tmp = string.find(ServerData, "\"", sstart+1)
+function AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>"..UPDATE_NAME..":</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
+if AUTOUPDATE then
+    local ServerData = GetWebResult(UPDATE_HOST, UPDATE_PATH, "", 5)
+    if ServerData then
+        local ServerVersion = string.match(ServerData, "local version = \"%d+.%d+\"")
+        ServerVersion = string.match(ServerVersion and ServerVersion or "", "%d+.%d+")
+        if ServerVersion then
+            ServerVersion = tonumber(ServerVersion)
+            if tonumber(version) < ServerVersion then
+                AutoupdaterMsg("New version available"..ServerVersion)
+                AutoupdaterMsg("Updating, please don't press F9")
+                DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () AutoupdaterMsg("Successfully updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end)  
+            else
+                AutoupdaterMsg("You have got the latest version ("..ServerVersion..")")
             end
-            if send then
-                ServerVersion = tonumber(string.sub(ServerData, sstart+1, send-1))
-            end
-
-            if ServerVersion ~= nil and tonumber(ServerVersion) ~= nil and tonumber(ServerVersion) > tonumber(version) then
-                DownloadFile(UPDATE_URL.."?nocache"..myHero.charName..os.clock(), UPDATE_FILE_PATH, function () print("<font color=\"#FF0000\"><b>"..UPDATE_SCRIPT_NAME..":</b> successfully updated. Reload (double F9) Please. ("..version.." => "..ServerVersion..")</font>") end)     
-            elseif ServerVersion then
-                print("<font color=\"#FF0000\"><b>"..UPDATE_SCRIPT_NAME..":</b> You have got the latest version: <u><b>"..ServerVersion.."</b></u></font>")
-            end     
-            ServerData = nil
         end
+    else
+        AutoupdaterMsg("Error downloading version info")
     end
-    AddTickCallback(update)
 end
 
 --Start Vadash Credit
@@ -146,16 +154,10 @@ local GateObject = nil
 local JayceWBuffed = false
 local informationTable = {}
 local spellExpired = true
+local IsSowLoaded = false
 local ignite, igniteReady = nil, nil
-if VIP_USER then
-    VP = VPrediction()
-    if VP.version < 2.404 then
-        print('You need latest version of VPREDICTION (2.404 or above) for this script to function')
-    end
-else
-    tp1 = TargetPrediction(1150, 1.3, 151, 70, 50)
-    tp2 = TargetPrediction(1750, 2.35, 151, 70, 50)
-end
+VP = VPrediction()
+
 
 function Init()
     --print('Init called')
@@ -183,10 +185,10 @@ function Init()
     Config:addTS(ts3)
     Config:addTS(ts2)
     Config:addTS(ts)
-    EnemyMinions = minionManager(MINION_ENEMY, 1200, myHero, MINION_SORT_MAXHEALTH_DEC)
-    JungleMinions = minionManager(MINION_JUNGLE, 1200, myHero, MINION_SORT_MAXHEALTH_DEC)
+    EnemyMinions = minionManager(MINION_ENEMY, 1400, myHero, MINION_SORT_MAXHEALTH_DEC)
+    JungleMinions = minionManager(MINION_JUNGLE, 1400, myHero, MINION_SORT_MAXHEALTH_DEC)
     initDone = true
-    print('Dienofail Jayce ' .. tostring(version) .. ' loaded!')
+    print('Dienofail VIP Jayce ' .. tostring(version) .. ' loaded!')
     -- if VIP_USER then
     --  AdvancedCallback:bind('OnGainBuff', function(unit, buff) OnGainBuff(unit, buff) end)
     --  AdvancedCallback:bind('OnLoseBuff', function(unit, buff) OnLoseBuff(unit, buff) end)
@@ -250,10 +252,40 @@ function Menu()
     Config.Extras:addParam("mManager", "W and E mana slider", SCRIPT_PARAM_SLICE, 0, 0, 100, 0)
     Config.Extras:addParam("ForceE", "Force Gate before Q", SCRIPT_PARAM_ONOFF, false)
     Config.Extras:addParam("CheckAOE", "Check for AOE with ranged EQ", SCRIPT_PARAM_ONOFF, true)
+    Config.Extras:addParam("SmartE", "Smart E for Melee E", SCRIPT_PARAM_ONOFF, true)
+    Config.Extras:addParam("WallKnock", "(SmartE) Check for wall", SCRIPT_PARAM_ONOFF, true)
+    Config.Extras:addParam("PushHealth", "(SmartE) E push min health", SCRIPT_PARAM_SLICE, 80, 0, 100, 0)
+    Config.Extras:addParam("PushAlly", "(SmartE) E push to allies", SCRIPT_PARAM_ONOFF, true)
+    Config.Extras:addParam("PushNum", "(SmartE) min allies for push",  SCRIPT_PARAM_SLICE, 2, 1, 5, 0)
+    if ProdOneLoaded then
+        Config.Extras:addParam("Prodiction", "Use Prodiction 1.0 instead of VPred", SCRIPT_PARAM_ONOFF, false)
+    end
     --Permashow
     Config:permaShow("Combo")
     Config:permaShow("Farm")
     Config:permaShow("Harass")
+    if IsSowLoaded then
+        Config:addSubMenu("Orbwalker", "SOWiorb")
+        SOWi:LoadToMenu(Config.SOWiorb)
+    end
+end
+
+function checkOrbwalker()
+    if _G.MMA_Loaded ~= nil and _G.MMA_Loaded then
+        IsMMALoaded = true
+        print('MMA detected')
+    elseif _G.AutoCarry then
+        IsSACLoaded = true
+        print('SAC detected')
+    elseif FileExist(LIB_PATH .."SOW.lua") then
+        require "SOW"
+        SOWi = SOW(VP)
+        IsSowLoaded = true
+        SOWi:RegisterAfterAttackCallback(AutoAttackReset)
+        print('SOW loaded')
+    else
+        print('Please use SAC, MMA, or SOW for your orbwalker')
+    end
 end
 
 --Credit Trees
@@ -272,6 +304,7 @@ end
 --End Credit Trees
 
 function OnLoad()
+    checkOrbwalker()
     Menu()
     Init()
 end
@@ -293,6 +326,7 @@ function WReset()
     end
 end
 
+
 function OnTick()
     if initDone then
         CheckSpellState()
@@ -313,9 +347,6 @@ function OnTick()
                 if ValidTarget(target) and target ~= nil then
                     Combo(target)
                 end
-                if Config.ComboSub.Orbwalk and ValidTarget(target) and target ~= nil then
-                    OrbWalking(target)
-                end
             end
             if Qtarget ~= nil and ValidTarget(Qtarget) and not Qtarget.dead then
                 if GetDistance(Qtarget) > 600 and isHammer and HammerAllReady and RangedAllReady and Config.ComboSub.useR and Config.ComboSub.MinEnemies >= CountEnemyNearPerson(myHero, 750) then
@@ -335,9 +366,6 @@ function OnTick()
         if Config.Harass then
             if Qtarget ~= nil and ValidTarget(Qtarget) then
                 Harass(Qtarget)
-                if Config.HarassSub.Orbwalk and ValidTarget(target) and target ~= nil then
-                    OrbWalking(Qtarget)
-                end
             end
         end
         
@@ -347,6 +375,10 @@ function OnTick()
 
         if Config.Escape then
             Escape()
+        end
+
+        if Config.Extras.EGapClosers then
+            EGapClosers()
         end
         -- if Config.Extras.EGapClosers then
         --     if not spellExpired and (GetTickCount() - informationTable.spellCastedTick) <= (informationTable.spellRange/informationTable.spellSpeed)*1000 then
@@ -370,6 +402,93 @@ function OnTick()
     end
 end
 
+function EGapClosers()
+    local Enemies = GetEnemyHeroes()
+    for idx, val in ipairs(Enemies) do
+        if isHammer and ValidTarget(val) and not val.dead and GetDistance(val) < 600 then
+            local IsDashing, CanHit, Position = VP:IsDashing(enemy, 0.250, 10, math.huge, myHero)
+            if IsDashing and CanHit and GetDistance(val) < SpellHammerE.Range and EReady then
+                CastSpell(_E, val)
+            end
+        end
+    end
+end
+
+function ShouldCastHammerE(Target)
+    if not Config.Extras.SmartE then
+        return true
+    else
+
+        if CheckWBuffStatus() then 
+            return false
+        end
+
+        if GetDistance(Target) < SpellHammerE.Range and EReady and isHammer then 
+            if getDmg("EM", Target, myHero) > Target.health then
+                return true
+            end
+
+            if Config.ComboSub.useHammerQ and Config.ComboSub.useHammerE then
+                if QReady and getDmg("QM", Target, myHero) >= getDmg("EM", Target, myHero) + 100 then
+                    return false
+                end
+            end
+            if CheckWallStun(Target) then
+                return true
+            end
+
+
+            if Config.Extras.PushAlly then
+                PushAllyCheck(Target)
+            end
+
+
+            if Current_Tick - HammerQcd > -300 then
+                return true
+            end
+
+            if Target.health / Target.maxHealth > (Config.Extras.PushHealth)/100 then
+                return false
+            end
+
+            local TimeToDisplacedPos = (300/myHero.ms)*1000 
+            local TimeForAttack = lastWindUpTime + lastAttackCD
+            if Config.Extras.Debug then
+                print(TimeForAttack)
+            end
+            local NumAttacks = math.floor(TimeToDisplacedPos/TimeForAttack)
+            if getDmg("AD", Target, myHero)*NumAttacks >= getDmg("EM", Target, myHero) then
+                return false
+            end
+
+            if RangedCombatReady then
+                return true
+            end
+        end
+    end
+end
+
+function PushAllyCheck(Target)
+    local Allies = GetAllyHeroes()
+    local numallies = 0
+    for idx, val in ipairs(Allies) do
+        if val ~= nil and not val.dead and val.health/val.maxHealth > Target.health/Target.maxHealth then
+            local PredictedPos, HitChance, Position = CombinedPos(Target, 0.250, math.huge, myHero, false)
+            local PushedPos = Vector(Position) + Vector(Vector(Position) - Vector(myHero)):normalized()*300
+            if GetDistance(PushedPos, val) < 500 then
+                numallies = numallies + 1
+            end
+        end
+    end
+
+    if numallies >= Config.Extras.PushNum then
+        return true
+    else 
+        return false
+    end
+
+end
+
 function CheckWBuffStatus()
     if JayceWBuffed and Config.ComboSub.ConsumeW then 
         return true
@@ -378,9 +497,47 @@ function CheckWBuffStatus()
     end
 end
 
+function AutoAttackReset()
+    if target ~= nil and ValidTarget(target) and GetDistance(target) < 550 and not isHammer and WReady and not IsMyManaLow() and (Config.Combo or Config.Harass) and (Config.ComboSub.useRangedW or Config.HarassSub.useRangedW) then
+        CastRangedW()
+    end 
+end
+
+function CheckWallStun(Target)
+    local function CheckWall(Position1, Position2)
+        local EndInitalVector = Vector(Vector(Position2) - Vector(Position1)):normalized()
+        local Mulitplier = 15
+        local WallCount = 0 
+        for i = 1, 50, 1 do
+            local current_multiplier = 6 * i 
+            local CurrentCheckVector = Vector(Position1) + EndInitalVector*current_multiplier
+            if IsWall(D3DXVECTOR3(CurrentCheckVector.x, CurrentCheckVector.y, CurrentCheckVector.z)) then
+              WallCount = WallCount + 1
+            end
+        end
+
+        if WallCount >= 1 then
+            return true
+        else
+            return false
+        end
+    end
+
+    if Target ~= nil and ValidTarget(Target) and isHammer and EReady and GetDistance(Target) < SpellHammerE.Range and Config.Extras.WallKnock then 
+        local PredictedPos, HitChance, Position = CombinedPos(Target, 0.250, math.huge, myHero, false)
+        local PushedPos = Vector(Position) + Vector(Vector(Position) - Vector(myHero)):normalized()*300
+        if Position ~= nil and PushedPos ~= nil and CheckWall(Position, PushedPos) then
+            return true
+        else
+            return false
+        end
+    end 
+
+    return false
+end
+
+
 function Combo(Target)
-
-
     if isHammer then
         if Config.ComboSub.useHammerQ then
             CastHammerQ(Target)
@@ -391,7 +548,7 @@ function Combo(Target)
         end
 
         if Config.ComboSub.useHammerE then
-            if not Config.ComboSub.useHammerEKnockback and not CheckWBuffStatus() then
+            if ShouldCastHammerE(Target) then
                 CastHammerE(Target)
             elseif Config.ComboSub.useHammerEKnockback and RangedCombatReady then
                 CastHammerE(Target)
@@ -483,7 +640,7 @@ function FarmQ()
         if QPos then
             if not isHammer then
                 CastEQFarm(QPos)
-            else 
+            elseif GetDistance(QPos) < SpellHammerQ.Range then
                 CastSpell(_Q, QPos.x, QPos.z)
             end
         end
@@ -533,15 +690,11 @@ function CastEQFarm(pos)
         if Config.Extras.Debug then
             print(GateVector)
         end
-        if Config.Extras.ForceE then
-            CastSpell(_E, GateVector.x, GateVector.z)
-            if GateObject ~= nil then
-                CastSpell(_Q, pos.x, pos.z)
-            end
-        else
-            CastSpell(_Q, pos.x, pos.z)
+        if EReady then
             CastSpell(_E, GateVector.x, GateVector.z)
         end
+        CastSpell(_Q, pos.x, pos.z)
+        
     end
 end
 
@@ -596,25 +749,21 @@ end
 
 
 function CastRangedQ(Target)
-    if VIP_USER and QReady and not isHammer and (EReady or GateObject ~= nil) and Target ~= nil then
-        local targetpos, hitchance, realpos = VP:GetLineCastPosition(Target, SpellRangedQ2.Delay, SpellRangedQ2.Width, SpellRangedQ2.Range, SpellRangedQ2.Speed, myHero, true)
-        if hitchance >= Config.Extras.MinHitchance then
+    if VIP_USER and QReady and not isHammer and EReady and Target ~= nil and ValidTarget(Target) then
+        local targetpos, hitchance, realpos = CombinedPredict(Target, SpellRangedQ2.Delay, SpellRangedQ2.Width, SpellRangedQ2.Range, SpellRangedQ2.Speed, myHero, true)
+        if targetpos ~= nil and hitchance ~= nil and hitchance >= Config.Extras.MinHitchance then
             local GateVector = Vector(myHero) + Vector(Vector(targetpos) - Vector(myHero)):normalized()*Config.Extras.GateDistance
             --double check
-            local col1 = VP:CheckMinionCollision(myHero, GateVector, SpellRangedQ1.Delay, SpellRangedQ1.Delay, GetDistance(myHero, GateVector), SpellRangedQ1.Delay, myHero, false)
-            if not col1 then
-                local additional_delay = GetDistance(GateVector)/SpellRangedQ1.Speed + SpellRangedQ1.Delay + 0.250
-
-                local Final_Vector, Final_Hitchance, Final_Pos = VP:GetLineCastPosition(Target, additional_delay, SpellRangedQ2.Width, SpellRangedQ2.Range, SpellRangedQ2.Speed, GateVector, true)
-                if Final_Vector ~= nil and Final_Hitchance ~= nil and EReady and GetDistance(Final_Vector) < SpellRangedQ2.Range and Final_Hitchance >= Config.Extras.MinHitchance then
-                    local GateVector2 = Vector(myHero) + Vector(Vector(Final_Vector) - Vector(myHero)):normalized()*Config.Extras.GateDistance
-                    CastSpell(_E, GateVector2.x, GateVector2.z)
-                end
-                if not Config.Extras.ForceE then
-                    CastSpell(_Q, Final_Vector.x, Final_Vector.z)
-                end
-                if GateObject ~= nil and GetDistance(Final_Vector) < SpellRangedQ2.Range and Config.Extras.ForceE then
-                    CastSpell(_Q, Final_Vector.x, Final_Vector.z)
+            local additional_delay = GetDistance(GateVector)/SpellRangedQ1.Speed + SpellRangedQ1.Delay + 0.250
+            local Final_Vector, Final_Hitchance, Final_Pos = CombinedPredict(Target, additional_delay, SpellRangedQ2.Width, SpellRangedQ2.Range, SpellRangedQ2.Speed, GateVector, true)
+            if Final_Vector ~= nil and Final_Hitchance ~= nil and EReady and GetDistance(Final_Vector) < SpellRangedQ2.Range and Final_Hitchance >= Config.Extras.MinHitchance then
+                local GateVector2 = Vector(myHero) + Vector(Vector(Final_Vector) - Vector(myHero)):normalized()*Config.Extras.GateDistance
+                CastSpell(_E, GateVector2.x, GateVector2.z)
+                local Speed = (GetDistance(GateVector2)/GetDistance(Target))*SpellRangedQ1.Speed + (GetDistance(GateVector2)/GetDistance(Target))*SpellRangedQ2.Speed
+                local CastPosition, HitChance3, Position = CombinedPredict(Target, SpellRangedQ2.Delay, SpellRangedQ2.Width, SpellRangedQ2.Range, Speed, myHero, true)
+                if CastPosition ~= nil and GetDistance(CastPosition) < SpellRangedQ2.Range + 150 then
+                    CastSpell(_Q, CastPosition.x, CastPosition.z)
+                    DelayAction(function() if QReady and GateObject ~= nil then CastSpell(_Q, CastPosition.x, CastPosition.z) end end, 0.1)
                 end
             end
         end
@@ -632,8 +781,8 @@ function CastRangedQ(Target)
         end
     end
     if VIP_USER and QReady and not EReady and GateObject == nil and not isHammer then
-        local predicted_pos, predicted_hitchance, predicted_loc = VP:GetLineCastPosition(Target, SpellRangedQ1.Delay, SpellRangedQ1.Width, SpellRangedQ1.Range, SpellRangedQ1.Speed, myHero, true)
-        if predicted_hitchance >= Config.Extras.MinHitchance and GetDistance(predicted_pos) < SpellRangedQ1.Range then
+        local predicted_pos, predicted_hitchance, predicted_loc = CombinedPredict(Target, SpellRangedQ1.Delay, SpellRangedQ1.Width, SpellRangedQ1.Range, SpellRangedQ1.Speed, myHero, true)
+        if predicted_pos ~= nil and predicted_hitchance ~= nil and predicted_hitchance >= Config.Extras.MinHitchance and GetDistance(predicted_pos) < SpellRangedQ1.Range then
             CastSpell(_Q, predicted_pos.x, predicted_pos.z)
         end
     elseif not VIP_USER and QReady and not EReady and GateObject == nil and not isHammer then
@@ -664,15 +813,9 @@ function CastRangedQMouse()
         if Config.Extras.Debug then
             print(GateVector)
         end
-        if Config.Extras.ForceE then
-            CastSpell(_E, GateVector.x, GateVector.z)
-            if GateObject ~= nil then
-                CastSpell(_Q, mousePos.x, mousePos.z)
-            end
-        else
-            CastSpell(_Q, mousePos.x, mousePos.z)
-            CastSpell(_E, GateVector.x, GateVector.z)
-        end
+        CastSpell(_E, GateVector.x, GateVector.z)
+        CastSpell(_Q, mousePos.x, mousePos.z)
+        DelayAction(function() if QReady and GateObject ~= nil then CastSpell(_Q, mousePos.x, mousePos.z) end end, 0.1)
     end
 end
 
@@ -845,8 +988,36 @@ end
 function OnCreateObj(obj)
     if obj.name == 'jayce_accel_gate_start.troy' and obj.team ~= TEAM_ENEMY and GetDistance(obj) < 700 then
         GateObject = obj
+        -- if GateObject ~= nil and target ~= nil and ValidTarget(target) and Config.Combo and QReady and not isHammer and Config.ComboSub.useRangedQ then
+        --     local Speed = (GetDistance(GateObject)/GetDistance(target))*SpellRangedQ1.Speed + (GetDistance(GateObject,target)/GetDistance(target))*SpellRangedQ2.Speed
+        --     local CastPosition, HitChance, Position = CombinedPredict(target, SpellRangedQ2.Delay, SpellRangedQ2.Width, SpellRangedQ2.Range, Speed, myHero, true)
+        --     if CastPosition ~= nil and GetDistance(CastPosition) < SpellRangedQ2.Range + 150 then
+        --         CastSpell(_Q, CastPosition.x, CastPosition.z)
+        --     end
+        -- elseif Qtarget ~= nil and ValidTarget(Qtarget) and Config.Combo and QReady and not isHammer and Config.ComboSub.useRangedQ then
+        --     local Speed = (GetDistance(GateObject)/GetDistance(Qtarget))*SpellRangedQ1.Speed + (GetDistance(GateObject,Qtarget)/GetDistance(target))*SpellRangedQ2.Speed
+        --     local CastPosition, HitChance, Position = CombinedPredict(Qtarget, SpellRangedQ2.Delay, SpellRangedQ2.Width, SpellRangedQ2.Range, Speed, myHero, true)
+        --     if CastPosition ~= nil and GetDistance(CastPosition) < SpellRangedQ2.Range + 150 then
+        --         CastSpell(_Q, CastPosition.x, CastPosition.z)
+        --     end
+        -- elseif target ~= nil and ValidTarget(target) and Config.Harass and QReady and not isHammer and Config.HarassSub.useRangedQ then
+        --     local Speed = (GetDistance(GateObject)/GetDistance(target))*SpellRangedQ1.Speed + (GetDistance(GateObject,target)/GetDistance(target))*SpellRangedQ2.Speed
+        --     local CastPosition, HitChance, Position = CombinedPredict(target, SpellRangedQ2.Delay, SpellRangedQ2.Width, SpellRangedQ2.Range, Speed, myHero, true)
+        --     if CastPosition ~= nil and GetDistance(CastPosition) < SpellRangedQ2.Range + 150 then
+        --         CastSpell(_Q, CastPosition.x, CastPosition.z)
+        --     end
+        -- elseif Qtarget ~= nil and ValidTarget(Qtarget) and Config.Harass and QReady and not isHammer and Config.HarassSub.useRangedQ then
+        --     local Speed = (GetDistance(GateObject)/GetDistance(Qtarget))*SpellRangedQ1.Speed + (GetDistance(GateObject,Qtarget)/GetDistance(target))*SpellRangedQ2.Speed
+        --     local CastPosition, HitChance, Position = CombinedPredict(Qtarget, SpellRangedQ2.Delay, SpellRangedQ2.Width, SpellRangedQ2.Range, Speed, myHero, true)
+        --     if CastPosition ~= nil and GetDistance(CastPosition) < SpellRangedQ2.Range + 150 then
+        --         CastSpell(_Q, CastPosition.x, CastPosition.z)
+        --     end
+        -- end
     end
 end
+
+
+
 function OnDeleteObj(obj)
     if obj.name == 'jayce_accel_gate_start.troy' and obj.team ~= TEAM_ENEMY then
         GateObject = nil
@@ -914,19 +1085,31 @@ function Checks()
             ignite = SUMMONER_2
     end
     igniteReady = (ignite ~= nil and myHero:CanUseSpell(ignite) == READY)
+
+    if myHero.dead then
+        JayceWBuffed = false
+    end
 end
 
 function CastR(form)
     if RReady and form == 'Hammer' then
         if not isHammer then
-            CastSpell(_R)
+            if WReady and target ~= nil and ValidTarget(target) and GetDistance(target) < 600 and not IsMyManaLow() then 
+                CastSpell(_W)
+                DelayAction(function() CastSpell(_R) end, 0.1)
+                if Config.Extras.Debug then
+                    print('Calling transform to ranged 1')
+                end
+            else
+                CastSpell(_R)
+                if Config.Extras.Debug then
+                    print('Calling transform to ranged 2')
+                end
+            end
         end
     elseif RReady and form == 'Ranged' then 
         if isHammer then
             CastSpell(_R)
-            if Config.Extras.Debug then
-                print('Calling transform to ranged')
-            end
         end
     end
 end
@@ -1084,14 +1267,6 @@ function CheckForm()
 end
 
 --Start Manciuszz orbwalker credit
-function OrbWalking(target)
-    if TimeToAttack() and GetDistance(target) <= 565 then
-        myHero:Attack(target)
-    elseif heroCanMove() then
-        moveToCursor()
-    end
-end
- 
 function TimeToAttack()
     return (GetTickCount() + GetLatency()/2 > lastAttack + lastAttackCD)
 end
@@ -1177,3 +1352,35 @@ function IsMyManaLow()
         return false
     end
 end
+
+function CombinedPredict(Target, Delay, Width, Range, Speed, myHero, Collision)
+  if Target == nil or Target.dead or not ValidTarget(Target) then return end
+  if not ProdOneLoaded or not Config.Extras.Prodiction then
+    local CastPosition, Hitchance, Position = VP:GetLineCastPosition(Target, Delay, Width, Range, Speed, myHero, false)
+    if CastPosition ~= nil and Hitchance >= 1 then 
+      return CastPosition, Hitchance+1, Position
+    end
+  elseif ProdOneLoaded and Config.Extras.Prodiction then
+    CastPosition, info = Prodiction.GetPrediction(Target, Range, Speed, Delay, Width, myHero)
+    if info ~= nil and info.hitchance ~= nil and CastPosition ~= nil then 
+      Hitchance = info.hitchance
+      return CastPosition, Hitchance, CastPosition
+    end
+  end
+end
+
+
+function CombinedPos(Target, Delay, Speed, myHero, Collision)
+  if Target == nil or Target.dead or not ValidTarget(Target) then return end
+  if Collision == nil then Collision = false end
+    if not ProdOneLoaded or not Config.Extras.Prodiction then
+      local PredictedPos, HitChance = VP:GetPredictedPos(Target, Delay, Speed, myHero, Collision)
+      return PredictedPos, HitChance
+    elseif ProdOneLoaded and Config.Extras.Prodiction then
+      local PredictedPos, info = Prodiction.GetPrediction(Target, 20000, Speed, Delay, 1, myHero)
+      if PredictedPos ~= nil and info ~= nil and info.hitchance ~= nil then
+        return PredictedPos, info.hitchance
+      end
+    end
+  end
+
