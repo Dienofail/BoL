@@ -2,15 +2,14 @@ Changelog
 
 Current known issues as of 6/8/2014 7:19PM EDT (GMT-5):
     Lulu:
-        -Occasional issues with support mode
         -VPrediction irelia message occasionally pops up after auth. This is a harmless issue and I think has to do with what the auth is returning (I share same auth platform with team funhouse, so that's probably why). I'm 99% sure this is irrelevant and you can safely ignore this message. 
-
-Nightly Versions:
-    Lulu v0.08:
-        -Merged with release as of now.
 
 
 Release Versions:
+
+6/22/14 4:07AM EDT (GMT-5):
+    Lulu v0.18:
+        -Fixed some pix detection issues
 
 6/18/14 9:41 AM EDT (GMT-5):
     Lulu v0.17:
