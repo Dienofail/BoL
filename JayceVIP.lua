@@ -469,7 +469,7 @@ function ShouldCastHammerE(Target)
             end
 
 
-            if GetTickCount() - HammerQcd > -300 then
+            if GetTickCount() - HammerQcd > -500 then
                 return true
             end
 
@@ -498,7 +498,7 @@ function PushAllyCheck(Target)
         if val ~= nil and not val.dead and val.health/val.maxHealth > Target.health/Target.maxHealth then
             local PredictedPos, HitChance, Position = CombinedPos(Target, 0.250, math.huge, myHero, false)
             local PushedPos = Vector(Position) + Vector(Vector(Position) - Vector(myHero)):normalized()*300
-            if GetDistance(PushedPos, val) < 500 then
+            if GetDistance(PushedPos, val) < 600 then
                 numallies = numallies + 1
             end
         end
