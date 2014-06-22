@@ -1,4 +1,4 @@
-local version = "1.01"
+local version = "1.02"
 --[[
 Jayce, Hammer Time - VIP Version
 
@@ -13,6 +13,7 @@ v1.0 - MAJOR REWRITE - VIP ONLY COMPATIBLE. OLD SCRIPT CAN BE FOUND AS JAYCE.LUA
 
 v1.01 - Added delay action for detection of orbwalkers. 
 
+v1.02 - Fixed collision and stuff. 
 
 
 ]]
@@ -60,31 +61,34 @@ function checkOrbwalker()
     end
 end
 
-local AUTOUPDATE= true
-local UPDATE_SCRIPT_NAME = "Jayce"
+math.randomseed(os.time()+GetInGameTimer()+GetTickCount())
+local AUTOUPDATE = true
 local UPDATE_NAME = "Jayce"
 local UPDATE_HOST = "raw.github.com"
-local UPDATE_PATH = "/Dienofail/BoL/master/JayceVIP.lua".."?rand="..math.random(1,10000)
+local VERSION_PATH = "/Dienofail/BoL/master/versions/Jayce.version" .."?rand="..math.random(1,10000)
 local UPDATE_FILE_PATH = SCRIPT_PATH..GetCurrentEnv().FILE_NAME
-local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
-function AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>"..UPDATE_NAME..":</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
+local UPDATE_FILE_PATH = string.gsub(UPDATE_FILE_PATH, "\\", "/")
+local UPDATE_URL = "https://raw.github.com/Dienofail/BoL/master/JayceVIP.lua" .. "?rand=" .. math.random(1,100000)
+function Download()
+  DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () print("<font color=\"#FF0000\">Dieno JayceVIP Download Finished</font>") end)
+end
 if AUTOUPDATE then
-    local ServerData = GetWebResult(UPDATE_HOST, UPDATE_PATH, "", 5)
+    local ServerData = GetWebResult(UPDATE_HOST, VERSION_PATH)
     if ServerData then
-        local ServerVersion = string.match(ServerData, "local version = \"%d+.%d+\"")
-        ServerVersion = string.match(ServerVersion and ServerVersion or "", "%d+.%d+")
+        local ServerVersion = string.match(ServerData, "%d+.%d+")
         if ServerVersion then
             ServerVersion = tonumber(ServerVersion)
             if tonumber(version) < ServerVersion then
-                AutoupdaterMsg("New version available"..ServerVersion)
-                AutoupdaterMsg("Updating, please don't press F9")
-                DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () AutoupdaterMsg("Successfully updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end)  
+                print("<font color=\"#FF0000\">New version available "..ServerVersion .."</font>")
+                print("<font color=\"#FF0000\">Updating, please don't press F9</font>")
+                DelayAction(Download, 2)
+                --DelayAction(function () print("Successfully updated. ("..version.." => "..ServerVersion..") press F9 twice to load the updated version after auth.") end, 3)
             else
-                AutoupdaterMsg("You have got the latest version ("..ServerVersion..")")
+                print("<font color=\"#FF0000\">You have got the latest version ("..ServerVersion..")</font>")
             end
         end
     else
-        AutoupdaterMsg("Error downloading version info")
+        print("<font color=\"#FF0000\">Error downloading version info</font>")
     end
 end
 
@@ -160,7 +164,23 @@ local spellExpired = true
 local IsSowLoaded = false
 local ignite, igniteReady = nil, nil
 VP = VPrediction()
-
+local ToInterrupt = {
+    { charName = "Caitlyn", spellName = "CaitlynAceintheHole"},
+    { charName = "FiddleSticks", spellName = "Crowstorm"},
+    { charName = "FiddleSticks", spellName = "DrainChannel"},
+    { charName = "Galio", spellName = "GalioIdolOfDurand"},
+    { charName = "Karthus", spellName = "FallenOne"},
+    { charName = "Katarina", spellName = "KatarinaR"},
+    { charName = "Lucian", spellName = "LucianR"},
+    { charName = "Malzahar", spellName = "AlZaharNetherGrasp"},
+    { charName = "MissFortune", spellName = "MissFortuneBulletTime"},
+    { charName = "Nunu", spellName = "AbsoluteZero"},
+    { charName = "Pantheon", spellName = "Pantheon_GrandSkyfall_Jump"},
+    { charName = "Shen", spellName = "ShenStandUnited"},
+    { charName = "Urgot", spellName = "UrgotSwap2"},
+    { charName = "Varus", spellName = "VarusQ"},
+    { charName = "Warwick", spellName = "InfiniteDuress"}
+}
 
 function Init()
     --print('Init called')
@@ -260,8 +280,9 @@ function Menu()
     Config.Extras:addParam("PushHealth", "(SmartE) E push min health", SCRIPT_PARAM_SLICE, 80, 0, 100, 0)
     Config.Extras:addParam("PushAlly", "(SmartE) E push to allies", SCRIPT_PARAM_ONOFF, true)
     Config.Extras:addParam("PushNum", "(SmartE) min allies for push",  SCRIPT_PARAM_SLICE, 2, 1, 5, 0)
+    Config.Extras:addParam("ESpells", "Use E to interrupt", SCRIPT_PARAM_ONOFF, true)
     if ProdOneLoaded then
-        Config.Extras:addParam("Prodiction", "Use Prodiction 1.0 instead of VPred", SCRIPT_PARAM_ONOFF, false)
+        Config.Extras:addParam("Prodiction", "Use Prodiction 1.1/1.0 instead of VPred", SCRIPT_PARAM_ONOFF, false)
     end
     --Permashow
     Config:permaShow("Combo")
@@ -431,22 +452,24 @@ function ShouldCastHammerE(Target)
                 return true
             end
 
-            if Config.ComboSub.useHammerQ and Config.ComboSub.useHammerE then
-                if QReady and getDmg("QM", Target, myHero) >= getDmg("EM", Target, myHero) + 100 then
-                    return false
-                end
+            if RangedCombatReady then
+                return true
             end
+
+
             if CheckWallStun(Target) then
                 return true
             end
 
 
             if Config.Extras.PushAlly then
-                PushAllyCheck(Target)
+                if PushAllyCheck(Target) then
+                    return true
+                end
             end
 
 
-            if Current_Tick - HammerQcd > -300 then
+            if GetTickCount() - HammerQcd > -300 then
                 return true
             end
 
@@ -456,16 +479,13 @@ function ShouldCastHammerE(Target)
 
             local TimeToDisplacedPos = (300/myHero.ms)*1000 
             local TimeForAttack = lastWindUpTime + lastAttackCD
-            if Config.Extras.Debug then
-                print(TimeForAttack)
-            end
             local NumAttacks = math.floor(TimeToDisplacedPos/TimeForAttack)
-            if getDmg("AD", Target, myHero)*NumAttacks >= getDmg("EM", Target, myHero) then
-                return false
+            if Config.Extras.Debug then
+                print(NumAttacks)
             end
 
-            if RangedCombatReady then
-                return true
+            if getDmg("AD", Target, myHero)*NumAttacks >= getDmg("EM", Target, myHero) then
+                return false
             end
         end
     end
@@ -501,7 +521,7 @@ function CheckWBuffStatus()
 end
 
 function AutoAttackReset()
-    if target ~= nil and ValidTarget(target) and GetDistance(target) < 525 and not isHammer and WReady and not IsMyManaLow() and (Config.Combo or Config.Harass) and (Config.ComboSub.useRangedW or Config.HarassSub.useRangedW) then
+    if target ~= nil and ValidTarget(target) and GetDistance(target) < 500 + VP:GetHitBox(target) and not isHammer and WReady and not IsMyManaLow() and (Config.Combo or Config.Harass) and (Config.ComboSub.useRangedW or Config.HarassSub.useRangedW) then
         CastRangedW()
     end 
 end
@@ -1132,6 +1152,13 @@ function OnProcessSpell(unit, spell)
 
         end
     end
+    if #ToInterrupt > 0 then
+        for _, ability in pairs(ToInterrupt) do
+            if isHammer and spell.name == ability and unit.team ~= myHero.team and GetDistance(unit) < SpellHammerE.Range and EReady and Config.Extras.ESpells then
+                CastSpell(_E, unit)
+            end
+        end
+    end
     if isHammer then
         if unit.isMe and spell.name == 'JayceToTheSkies' then
             HammerQcd = GetTickCount() + CalculateRealCD(HammerTrueQcd[myHero:GetSpellData(_Q).level])
@@ -1154,6 +1181,9 @@ function OnProcessSpell(unit, spell)
             --print('Ranged W Cast')
             JayceWBuffed = true
             RangedWcd = GetTickCount() + CalculateRealCD(RangedTrueWcd[myHero:GetSpellData(_W).level])
+            if IsSowLoaded then
+                DelayAction(function() SOWi:resetAA() end, 0.25) 
+            end
         end
         if unit.isMe and spell.name == 'jayceaccelerationgate' then
             RangedEcd = GetTickCount() + CalculateRealCD(RangedTrueEcd)
@@ -1294,7 +1324,7 @@ end
 function OnAnimation(unit,animationName)
     if not initDone then return end
     if unit.isMe and lastAnimation ~= animationName then lastAnimation = animationName end
-    if unit.isMe and animationName:lower():find("attack") and target ~= nil and ValidTarget(target) and GetDistance(target) < 525 then
+    if unit.isMe and animationName:lower():find("attack") and target ~= nil and ValidTarget(target) and GetDistance(target) < 500 + VP:GetHitBox(target) then
         if not isHammer and WReady and Config.Combo and Config.ComboSub.useRangedW then
             DelayAction(function() CastRangedW() end, animation_time + 0.05)
         end
@@ -1371,15 +1401,21 @@ end
 function CombinedPredict(Target, Delay, Width, Range, Speed, myHero, Collision)
   if Target == nil or Target.dead or not ValidTarget(Target) then return end
   if not ProdOneLoaded or not Config.Extras.Prodiction then
-    local CastPosition, Hitchance, Position = VP:GetLineCastPosition(Target, Delay, Width, Range, Speed, myHero, false)
+    local CastPosition, Hitchance, Position = VP:GetLineCastPosition(Target, Delay, Width, Range, Speed, myHero, true)
     if CastPosition ~= nil and Hitchance >= 1 then 
       return CastPosition, Hitchance+1, Position
     end
   elseif ProdOneLoaded and Config.Extras.Prodiction then
     CastPosition, info = Prodiction.GetPrediction(Target, Range, Speed, Delay, Width, myHero)
-    if info ~= nil and info.hitchance ~= nil and CastPosition ~= nil then 
-      Hitchance = info.hitchance
-      return CastPosition, Hitchance, CastPosition
+    local isCol = false
+    if info ~= nil then
+       isCol, _ = info.collision()
+    end
+    if info ~= nil and info.hitchance ~= nil and CastPosition ~= nil and isCol then
+        return CastPosition, 0, CastPosition
+    elseif info ~= nil and info.hitchance ~= nil and CastPosition ~= nil and not isCol then 
+        Hitchance = info.hitchance
+        return CastPosition, Hitchance, CastPosition
     end
   end
 end
@@ -1389,11 +1425,17 @@ function CombinedPos(Target, Delay, Speed, myHero, Collision)
   if Target == nil or Target.dead or not ValidTarget(Target) then return end
   if Collision == nil then Collision = false end
     if not ProdOneLoaded or not Config.Extras.Prodiction then
-      local PredictedPos, HitChance = VP:GetPredictedPos(Target, Delay, Speed, myHero, Collision)
+      local PredictedPos, HitChance = VP:GetPredictedPos(Target, Delay, Speed, myHero, false)
       return PredictedPos, HitChance
     elseif ProdOneLoaded and Config.Extras.Prodiction then
       local PredictedPos, info = Prodiction.GetPrediction(Target, 20000, Speed, Delay, 1, myHero)
-      if PredictedPos ~= nil and info ~= nil and info.hitchance ~= nil then
+      local isCol = false
+      if info ~= nil then
+        isCol, _ = info.collision()
+      end
+      if PredictedPos ~= nil and info ~= nil and isCol then
+        return PredictedPos, 0
+      elseif PredictedPos ~= nil and info ~= nil and info.hitchance ~= nil and not isCol then
         return PredictedPos, info.hitchance
       end
     end
