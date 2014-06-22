@@ -1,4 +1,4 @@
-local version = "1.21"
+local version = "1.22"
 --[[
 
 Free Lucian!
@@ -68,6 +68,8 @@ v1.19 - Reverted changes to spellweaving introudced in v1.16
 v1.20 - Prod 1.0 option added
 
 v1.21 - Fixed some messages
+
+v1.22 - fixes to animation time
 ]]
 
 if myHero.charName ~= "Lucian" then return end

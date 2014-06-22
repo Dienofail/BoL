@@ -1,4 +1,4 @@
-local version = "1.0"
+local version = "1.01"
 --[[
 Jayce, Hammer Time - VIP Version
 
@@ -10,6 +10,8 @@ Changelog:
 
 
 v1.0 - MAJOR REWRITE - VIP ONLY COMPATIBLE. OLD SCRIPT CAN BE FOUND AS JAYCE.LUA
+
+v1.01 - Added delay action for detection of orbwalkers. 
 
 
 
@@ -153,6 +155,7 @@ local QReady, WReady, EReady, RReady = false, false, false, false
 local GateObject = nil
 local JayceWBuffed = false
 local informationTable = {}
+local animation_time = 0.9
 local spellExpired = true
 local IsSowLoaded = false
 local ignite, igniteReady = nil, nil
@@ -304,14 +307,14 @@ end
 --End Credit Trees
 
 function OnLoad()
-    checkOrbwalker()
-    Menu()
-    Init()
+    DelayAction(checkOrbwalker,4)
+    DelayAction(Menu,4.5)
+    DelayAction(Init,4.5)
 end
 
 function WReset()
     if Config.ComboSub.useWReset then
-        if _G.MMA_Target ~= nil and _G.MMA_AbleToMove and not _G.MMA_AttackAvailable then
+        if _G.MMA_Target ~= nil and _G.MMA_AbleToMove and not _G.MMA_AttackAvailable and _G.MMA_NextAttackAvailability < 0.5 then
             return true
         elseif _G.AutoCarry and (_G.AutoCarry.shotFired or _G.AutoCarry.Orbwalker:IsAfterAttack()) then 
             if Config.Extras.Debug then
@@ -498,7 +501,7 @@ function CheckWBuffStatus()
 end
 
 function AutoAttackReset()
-    if target ~= nil and ValidTarget(target) and GetDistance(target) < 550 and not isHammer and WReady and not IsMyManaLow() and (Config.Combo or Config.Harass) and (Config.ComboSub.useRangedW or Config.HarassSub.useRangedW) then
+    if target ~= nil and ValidTarget(target) and GetDistance(target) < 525 and not isHammer and WReady and not IsMyManaLow() and (Config.Combo or Config.Harass) and (Config.ComboSub.useRangedW or Config.HarassSub.useRangedW) then
         CastRangedW()
     end 
 end
@@ -849,6 +852,7 @@ end
 
 
 function OnDraw()
+    if not initDone then return end
     if Config.Extras.Debug then
         DrawText3D("Current JayceWBuffed status is " .. tostring(JayceWBuffed), myHero.x+200, myHero.y, myHero.z+200, 25,  ARGB(255,255,0,0), true)
         DrawText('Hammer Q ready is ' .. tostring(HammerQReady) .. ' ' .. tostring(RangedQReady) .. ' ' .. tostring(HammerWReady) .. ' ' .. tostring(RangedWReady) .. ' ' .. tostring(HammerEReady) .. ' ' .. tostring(RangedEReady) .. ' RReady ' .. tostring(RReady), 15, 300, 300, ARGB(255,0,255,0))
@@ -986,6 +990,7 @@ function OnDraw()
 end
 
 function OnCreateObj(obj)
+    if not initDone then return end
     if obj.name == 'jayce_accel_gate_start.troy' and obj.team ~= TEAM_ENEMY and GetDistance(obj) < 700 then
         GateObject = obj
         -- if GateObject ~= nil and target ~= nil and ValidTarget(target) and Config.Combo and QReady and not isHammer and Config.ComboSub.useRangedQ then
@@ -1019,6 +1024,7 @@ end
 
 
 function OnDeleteObj(obj)
+    if not initDone then return end
     if obj.name == 'jayce_accel_gate_start.troy' and obj.team ~= TEAM_ENEMY then
         GateObject = nil
     end
@@ -1116,11 +1122,14 @@ end
 
 
 function OnProcessSpell(unit, spell)
+    if not initDone then return end
     if unit == myHero then
         if spell.name:lower():find("attack") then
             lastAttack = GetTickCount() - GetLatency()/2
             lastWindUpTime = spell.windUpTime*1000
             lastAttackCD = spell.animationTime*1000
+            animation_time = lastWindUpTime
+
         end
     end
     if isHammer then
@@ -1283,7 +1292,13 @@ function moveToCursor()
 end
  
 function OnAnimation(unit,animationName)
+    if not initDone then return end
     if unit.isMe and lastAnimation ~= animationName then lastAnimation = animationName end
+    if unit.isMe and animationName:lower():find("attack") and target ~= nil and ValidTarget(target) and GetDistance(target) < 525 then
+        if not isHammer and WReady and Config.Combo and Config.ComboSub.useRangedW then
+            DelayAction(function() CastRangedW() end, animation_time + 0.05)
+        end
+    end
 end
 --End Manciuszz orbwalker credit 
 
