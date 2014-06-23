@@ -1,4 +1,4 @@
-local version = "1.22"
+local version = "1.23"
 --[[
 
 Free Lucian!
@@ -70,6 +70,8 @@ v1.20 - Prod 1.0 option added
 v1.21 - Fixed some messages
 
 v1.22 - fixes to animation time
+
+v1,23 - Removed unnecessary menu options
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -215,7 +217,7 @@ function Menu()
 	Config.Extras:addParam("ESlows", "E Slows", SCRIPT_PARAM_ONOFF, true)
 	Config.Extras:addParam("CheckQ", "Check Q Using Minions", SCRIPT_PARAM_ONOFF, true)
 	Config.Extras:addParam("AoEQ", "Check AoE Q", SCRIPT_PARAM_ONOFF, true)
-	Config.Extras:addParam("spellweavedelay", "Spell Wave Delay (S)", SCRIPT_PARAM_SLICE, 0.6, 0.2, 1.5, 0)
+	--Config.Extras:addParam("spellweavedelay", "Spell Wave Delay (S)", SCRIPT_PARAM_SLICE, 0.6, 0.2, 1.5, 0)
 	Config.Extras:addParam("wcollision", "Collision on W", SCRIPT_PARAM_ONOFF, false)
 	if ProdOneLoaded then
 		Config.Extras:addParam("Prodiction", "Use Prodiction 1.0 instead of VPred", SCRIPT_PARAM_ONOFF, false)
@@ -392,6 +394,7 @@ function OnAnimation(unit, animation)
 		if Config.Extras.Debug then
 			print(animation)
 		end		
+		
 		--[[
 		if (Config.Combo or Config.Harass) and ((Config.ComboSub.useQ or Config.HarassSub.useQ) and QReady) and target.type == myHero.type and target ~= nil and GetDistance(target) < 550 + VP:GetHitBox(target) + 50 and not IsMyManaLow() then
 			DelayAction(function() CastQ(target) end, animation_time + 0.1)
