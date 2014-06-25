@@ -1,4 +1,4 @@
-local version = "1.02"
+local version = "1.03"
 --[[
 Jayce, Hammer Time - VIP Version
 
@@ -14,6 +14,8 @@ v1.0 - MAJOR REWRITE - VIP ONLY COMPATIBLE. OLD SCRIPT CAN BE FOUND AS JAYCE.LUA
 v1.01 - Added delay action for detection of orbwalkers. 
 
 v1.02 - Fixed collision and stuff. 
+
+v1.03 - Fixed dash check errors
 
 
 ]]
@@ -430,7 +432,7 @@ function EGapClosers()
     local Enemies = GetEnemyHeroes()
     for idx, val in ipairs(Enemies) do
         if isHammer and ValidTarget(val) and not val.dead and GetDistance(val) < 600 then
-            local IsDashing, CanHit, Position = VP:IsDashing(enemy, 0.250, 10, math.huge, myHero)
+            local IsDashing, CanHit, Position = VP:IsDashing(val, 0.250, 10, math.huge, myHero)
             if IsDashing and CanHit and GetDistance(val) < SpellHammerE.Range and EReady then
                 CastSpell(_E, val)
             end
