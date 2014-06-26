@@ -1,4 +1,4 @@
-local version = "1.03"
+local version = "1.04"
 --[[
 Jayce, Hammer Time - VIP Version
 
@@ -17,7 +17,7 @@ v1.02 - Fixed collision and stuff.
 
 v1.03 - Fixed dash check errors
 
-
+v1.04 - Added Q+E mana checks for ranged form
 ]]
 
 if myHero.charName ~= "Jayce" then return end
@@ -776,7 +776,7 @@ end
 
 
 function CastRangedQ(Target)
-    if VIP_USER and QReady and not isHammer and EReady and Target ~= nil and ValidTarget(Target) then
+    if VIP_USER and QReady and not isHammer and EReady and Target ~= nil and ValidTarget(Target) and myHero.mana > myHero:GetSpellData(_Q).mana + myHero:GetSpellData(_E).mana then
         local targetpos, hitchance, realpos = CombinedPredict(Target, SpellRangedQ2.Delay, SpellRangedQ2.Width, SpellRangedQ2.Range, SpellRangedQ2.Speed, myHero, true)
         if targetpos ~= nil and hitchance ~= nil and hitchance >= Config.Extras.MinHitchance then
             local GateVector = Vector(myHero) + Vector(Vector(targetpos) - Vector(myHero)):normalized()*Config.Extras.GateDistance
