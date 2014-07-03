@@ -7,6 +7,10 @@ Current known issues as of 6/8/2014 7:19PM EDT (GMT-5):
 
 Release Versions:
 
+7/2/14 8:18PM EDT (GMT-5):
+    Zac v0.09:
+        -Adjusted E cast packets for new patch
+
 6/25/14 10:02PM EDT (GMT-5):
     Rumble v0.15: 
         -Fixed menu for R Min prediction.
