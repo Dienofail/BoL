@@ -1,4 +1,4 @@
-local version = "0.09"
+local version = "0.1"
 --[[
 Changelog
 
@@ -19,6 +19,8 @@ v0.07 - Added failsafes for enemy going out of range, should now cast if enemy g
 v0.08 - now will use E when killable and not wait for a reset.
 
 v0.09 - autoupdater
+
+v0.1 - 2nd cast E stuff
 ]]--
 
 
@@ -370,7 +372,7 @@ end
 --Copied from  
 function Send2ndQPacket(xpos, zpos)
 	--PrintChat("Packet Called!")
-	packet = CLoLPacket(0xE5)
+	packet = CLoLPacket(0xE6)
 	packet:EncodeF(myHero.networkID)
 	packet:Encode1(128)
 	packet:EncodeF(xpos)
@@ -391,7 +393,7 @@ function PluginOnSendPacket(packet)
 		--p:block()
 	--end
 	if Menu.CancelQ == false then 
-	    if packet.header == 0xE5 and AutoCarry.MainMenu.AutoCarry then --and Cast then -- 2nd cast of channel spells packet2
+	    if packet.header == 0xE6 and AutoCarry.MainMenu.AutoCarry then --and Cast then -- 2nd cast of channel spells packet2
 			packet.pos = 5
 	        spelltype = packet:Decode1()
 	        if spelltype == 0x80 then -- 0x80 == Q
@@ -402,7 +404,7 @@ function PluginOnSendPacket(packet)
 	    end
 
 
-	    if packet.header == 0xE5 and isPressedQ and Menu.manualQ then --and Cast then -- 2nd cast of channel spells packet2
+	    if packet.header == 0xE6 and isPressedQ and Menu.manualQ then --and Cast then -- 2nd cast of channel spells packet2
 			packet.pos = 5
 	        spelltype = packet:Decode1()
 	        if spelltype == 0x80 then -- 0x80 == Q
