@@ -1,4 +1,4 @@
-local version = "1.15"
+local version = "1.16"
 --[[
 
 Velkoz, The Geometry Nightmare
@@ -52,6 +52,10 @@ v1.12 - Fixed E and Q range
 v1.13 - Added option to disable autoattacks. Added toggle mode. 
 
 v1.14 - Fixed compatibility with VPred 2.404
+
+v1.15 - ???
+
+v1.16 - Fixed R autolock packet changes
 
 Todo:
 
@@ -1367,7 +1371,7 @@ function OnSendPacket(p)
 		end
 	end
 
-	if p.header == 229 and Config.TrackR then
+	if p.header == 229 or p.header == 230 and Config.TrackR then
 	    -- if Config.Extras.Debug then
      --    	print('p blocked')
    		-- end
@@ -1392,7 +1396,7 @@ function OnSendPacket(p)
 			-- if Config.Extras.Debug then
    --      		print('r_target_acquired')
    -- 			end
-    		local packet = CLoLPacket(229)
+    		local packet = CLoLPacket(230)
 			packet.dwArg1 = result.dwArg1
 			packet.dwArg2 = result.dwArg2
 			packet:EncodeF(result.sourceNetworkId)
@@ -1403,7 +1407,7 @@ function OnSendPacket(p)
 			--SendPacket(packet)\
 			SendPacket(packet)
 		else
-    		local packet = CLoLPacket(229)
+    		local packet = CLoLPacket(230)
 			packet.dwArg1 = result.dwArg1
 			packet.dwArg2 = result.dwArg2
 			packet:EncodeF(result.sourceNetworkId)
