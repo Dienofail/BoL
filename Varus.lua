@@ -1,4 +1,4 @@
-local version = "0.08"
+local version = "0.09"
 --[[
 
 Free Varus!
@@ -22,6 +22,8 @@ v0.06 - fixes to Q stuck. Should get stuck far less often during combo (ditto on
 v0.07 - Github
 
 v0.08 - Separate W stack slider for combo and harass
+
+v0.09 - Fixed 2nd E cast packet
 ]]
 if myHero.charName ~= "Varus" then return end
 require 'VPrediction'
@@ -405,7 +407,7 @@ function OnSendPacket(packet)
 	--if p:get("spellId") == SkillE.spellKey and not (AutoCarry.MainMenu.AutoCarry or AutoCarry.MainMenu.LaneClear or AutoCarry.MainMenu.MixedMode or AutoCarry.PluginMenu.esettings.SlowE) then
 		--p:block()
 	--end
-    if packet.header == 0xE5 and isPressedQ then --and Cast then -- 2nd cast of channel spells packet2
+    if packet.header == 0xE5 or packet.header == 0xE6 and isPressedQ then --and Cast then -- 2nd cast of channel spells packet2
 		packet.pos = 5
         spelltype = packet:Decode1()
         if spelltype == 0x80 then -- 0x80 == Q
@@ -414,7 +416,7 @@ function OnSendPacket(packet)
             --PrintChat("Packet blocked")
         end
     end
-    if packet.header == 0x99 and isPressedQ then --and Cast then -- 2nd cast of channel spells packet2
+    if packet.header == 0x9A and isPressedQ then --and Cast then -- 2nd cast of channel spells packet2
         packet:Block()
 	end
 end
@@ -537,7 +539,7 @@ end
 
 function Send2ndQPacket(xpos, zpos)
 	--PrintChat("Packet Called!")
-	packet = CLoLPacket(0xE5)
+	packet = CLoLPacket(0xE6)
 	packet:EncodeF(myHero.networkID)
 	packet:Encode1(128)
 	packet:EncodeF(xpos)
