@@ -1,4 +1,4 @@
-local version = "0.13"
+local version = "0.14"
 
 --[[
 
@@ -32,6 +32,8 @@ v0.11 - Improved pink ward deletion and added crosses (credit = mtmoon)
 v0.12 - Swapped to github
 
 v0.13 - Added toggle for crosses (fixes FPS issues hopefully). Default off
+
+v0.14 - Fixed for patch 4.11
 
 --Credits
 
@@ -178,7 +180,7 @@ function RecPing(X, Y)
 end
 
 function OnRecvPacket(p)
-	if p.header == 49 then
+	if p.header == 50 then
 		p.pos = 1
 		local deaddid = p:DecodeF()
 		local killerid = p:DecodeF()
@@ -191,7 +193,7 @@ function OnRecvPacket(p)
 		end
 	end
 	
-	if p.header == 0xB4 then
+	if p.header == 0xB5 then
 		
 		p.pos = 12
 
