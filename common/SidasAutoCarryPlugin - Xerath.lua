@@ -484,7 +484,7 @@ end
 function Send2ndQPacket(xpos, zpos)
 	--PrintChat("Packet Called!")
 	if isPressedQ then
-		packet = CLoLPacket(0xE5)
+		packet = CLoLPacket(0xE6)
 		packet:EncodeF(myHero.networkID)
 		packet:Encode1(128)
 		packet:EncodeF(xpos)
@@ -681,14 +681,14 @@ function PluginOnSendPacket(packet)
 	--if p:get("spellId") == SkillE.spellKey and not (AutoCarry.MainMenu.AutoCarry or AutoCarry.MainMenu.LaneClear or AutoCarry.MainMenu.MixedMode or AutoCarry.PluginMenu.SlowE) then
 		--p:block()
 	--end
-    if packet.header == 0xE5 and isPressedQ and not IsKeyDown(KeyQ) then --and Cast then -- 2nd cast of channel spells packet2
+    if packet.header == 0xE6 and isPressedQ and not IsKeyDown(KeyQ) then --and Cast then -- 2nd cast of channel spells packet2
 		packet.pos = 5
         spelltype = packet:Decode1()
         if spelltype == 0x80 then -- 0x80 == Q
             packet.pos = 1
             packet:Block()
             if AutoCarry.PluginMenu.Debug then
-            	PrintChat("Packet 0xE5 blocked")
+            	PrintChat("Packet 0xE6 blocked")
             end
         end
     end
