@@ -692,7 +692,7 @@ function PluginOnSendPacket(packet)
             end
         end
     end
-    if packet.header == 0x99 then --and Cast then -- 2nd cast of channel spells packet2
+    if packet.header == 0x9A then --and Cast then -- 2nd cast of channel spells packet2
         if isPressedQ then
 	        packet:Block()
 	        if AutoCarry.PluginMenu.Debug then
