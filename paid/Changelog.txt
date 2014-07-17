@@ -7,6 +7,13 @@ Current known issues as of 6/8/2014 7:19PM EDT (GMT-5):
 
 Release Versions:
 
+7/17/14 4:04PM EDT (GMT-5):
+    Rumble v0.16:
+        -Updated encryption and auth systems 
+    Lulu v0.20:
+        -Updated packet header for pix detection for patch 4.12
+        -Updated encryption and auth systems. 
+
 7/3/14 4:33PM EDT (GMT-5):
     Lulu v0.19:
         -Fixed Pix Packet detection for patch 4.11
