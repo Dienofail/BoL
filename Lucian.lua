@@ -1,4 +1,4 @@
-local version = "1.25"
+local version = "1.26"
 --[[
 
 Free Lucian!
@@ -76,6 +76,8 @@ v1,23 - Removed unnecessary menu options
 v1.24 - First round of adjustments for patch v4.12
 
 v1.25 - Second round of changes for patch v4.12 - Fixes to Q/W range when you have passive
+
+v1.26 - Fixes to Q
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -294,14 +296,14 @@ end
 
 
 function Combo(Target)
-	if QReady and Config.ComboSub.useQ and not IsMyManaLow() and GetDistance(Target) > 515 + VP:GetHitBox(Target) and not isBuffed then
+	if QReady and Config.ComboSub.useQ and not IsMyManaLow() and GetDistance(Target) > 515 + VP:GetHitBox(Target) then
 		-- if Config.Extras.Debug then
 		-- 	print('Cast Q called')
 		-- end	
 		CastQ(Target)
 	end
 
-	if WReady and Config.ComboSub.useW and not IsMyManaLow() and GetDistance(Target) > 515 + VP:GetHitBox(Target) and not isBuffed then
+	if WReady and Config.ComboSub.useW and not IsMyManaLow() and GetDistance(Target) > 515 + VP:GetHitBox(Target) then
 		CastW(Target)
 	end
 
