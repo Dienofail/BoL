@@ -1,4 +1,4 @@
-local version = "1.15"
+local version = "1.16"
 --[[
 
 Free Jinx!
@@ -65,6 +65,8 @@ v1.13 - Typo fix
 v1.14 - SoW integration
 
 v1.15 - Prod 1.1/1.0 integration
+
+v1.16 - Draw fixes
 ]]
 
 if myHero.charName ~= "Jinx" then return end
@@ -528,9 +530,9 @@ function OnDraw()
 
 		if Config.Draw.DrawOtherQ then
 			if isFishBones then
-				DrawCircle2(myHero.x, myHero.y, myHero.z, QRange,ARGB(255, 255, 0, 0))
+				DrawCircle2(myHero.x, myHero.y, myHero.z, 600,ARGB(255, 255, 0, 0))
 			else
-				DrawCircle2(myHero.x, myHero.y, myHero.z, 600, ARGB(255, 255, 0, 0))
+				DrawCircle2(myHero.x, myHero.y, myHero.z, QRange, ARGB(255, 255, 0, 0))
 			end
 		end
 	end
