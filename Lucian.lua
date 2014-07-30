@@ -1,4 +1,4 @@
-local version = "1.26"
+local version = "1.27"
 --[[
 
 Free Lucian!
@@ -78,6 +78,8 @@ v1.24 - First round of adjustments for patch v4.12
 v1.25 - Second round of changes for patch v4.12 - Fixes to Q/W range when you have passive
 
 v1.26 - Fixes to Q
+
+v1.27 - 4.13 Fixes
 ]]
 
 if myHero.charName ~= "Lucian" then return end
@@ -296,14 +298,14 @@ end
 
 
 function Combo(Target)
-	if QReady and Config.ComboSub.useQ and not IsMyManaLow() and GetDistance(Target) > 515 + VP:GetHitBox(Target) then
+	if QReady and Config.ComboSub.useQ and not IsMyManaLow() and GetDistance(Target) > 500 + VP:GetHitBox(Target) then
 		-- if Config.Extras.Debug then
 		-- 	print('Cast Q called')
 		-- end	
 		CastQ(Target)
 	end
 
-	if WReady and Config.ComboSub.useW and not IsMyManaLow() and GetDistance(Target) > 515 + VP:GetHitBox(Target) then
+	if WReady and Config.ComboSub.useW and not IsMyManaLow() and GetDistance(Target) > 500 + VP:GetHitBox(Target) then
 		CastW(Target)
 	end
 
@@ -314,11 +316,11 @@ end
 
 
 function Harass(Target)
-	if QReady and Config.HarassSub.useQ and not IsMyManaLowHarass() and GetDistance(Target) > 515 + VP:GetHitBox(Target) then
+	if QReady and Config.HarassSub.useQ and not IsMyManaLowHarass() and GetDistance(Target) > 500 + VP:GetHitBox(Target) then
 		CastQ(Target)
 	end
 
-	if WReady and Config.HarassSub.useW and not IsMyManaLowHarass() and GetDistance(Target) > 515 + VP:GetHitBox(Target)  then
+	if WReady and Config.HarassSub.useW and not IsMyManaLowHarass() and GetDistance(Target) > 500 + VP:GetHitBox(Target)  then
 		CastW(Target)
 	end
 end
@@ -415,25 +417,25 @@ function OnAnimation(unit, animation)
 		end
 		]]
 		if Config.Combo then
-			if (Config.ComboSub.useQ and QReady) and target.type == myHero.type and not isBuffed and target ~= nil and GetDistance(target) < 500 + VP:GetHitBox(target) + 25 and not IsMyManaLow() then -- Q combo
-				DelayAction(function() CastQ(target) end, animation_time + 0.01)
+			if (Config.ComboSub.useQ and QReady) and target.type == myHero.type and not isBuffed and target ~= nil and GetDistance(target) < 500 + VP:GetHitBox(target) and not IsMyManaLow() then -- Q combo
+				DelayAction(function() CastQ(target) end, animation_time + 0.05)
 				if Config.Extras.Debug then
 					print('QChainedCombo')
 				end
-			elseif (Config.ComboSub.useW and WReady) and target.type == myHero.type and not isBuffed and not QReady and target ~= nil and GetDistance(target) < 500 + VP:GetHitBox(target) + 25 and not IsMyManaLow() then -- W combo
-				DelayAction(function() CastW(target) end, animation_time + 0.01)
+			elseif (Config.ComboSub.useW and WReady) and target.type == myHero.type and not isBuffed and not QReady and target ~= nil and GetDistance(target) < 500 + VP:GetHitBox(target)and not IsMyManaLow() then -- W combo
+				DelayAction(function() CastW(target) end, animation_time + 0.05)
 				if Config.Extras.Debug then
 					print('WChainedCombo')
 				end
 			end
 		elseif Config.Harass then
-			if (Config.HarassSub.useQ and QReady) and target.type == myHero.type and not isBuffed  and target ~= nil and GetDistance(target) < 500 + VP:GetHitBox(target) + 25 and not IsMyManaLowHarass() then -- Q Harass
-				DelayAction(function() CastQ(target) end, animation_time + 0.01)
+			if (Config.HarassSub.useQ and QReady) and target.type == myHero.type and not isBuffed  and target ~= nil and GetDistance(target) < 500 + VP:GetHitBox(target) and not IsMyManaLowHarass() then -- Q Harass
+				DelayAction(function() CastQ(target) end, animation_time + 0.05)
 				if Config.Extras.Debug then
 					print('QChainedHarass')
 				end
-			elseif (Config.HarassSub.useW and WReady) and target.type == myHero.type and not isBuffed  and not QReady and target ~= nil and GetDistance(target) < 500 + VP:GetHitBox(target) + 25 and not IsMyManaLowHarass() then -- W Harass
-				DelayAction(function() CastW(target) end, animation_time + 0.01)
+			elseif (Config.HarassSub.useW and WReady) and target.type == myHero.type and not isBuffed  and not QReady and target ~= nil and GetDistance(target) < 500 + VP:GetHitBox(target) and not IsMyManaLowHarass() then -- W Harass
+				DelayAction(function() CastW(target) end, animation_time + 0.05)
 				if Config.Extras.Debug then
 					print('WChainedHarass')
 				end
@@ -445,24 +447,24 @@ end
 function AutoAttackReset()
 	if target ~= nil and IsSowLoaded then
 		if Config.Combo then
-			if (Config.ComboSub.useQ and QReady) and target.type == myHero.type and not isBuffed  and target ~= nil and GetDistance(target) < 500 + VP:GetHitBox(target) + 25 and not IsMyManaLow() then -- Q combo
+			if (Config.ComboSub.useQ and QReady) and target.type == myHero.type and not isBuffed  and target ~= nil and GetDistance(target) < 500 + VP:GetHitBox(target) and not IsMyManaLow() then -- Q combo
 				CastQ(target)
 				if Config.Extras.Debug then
 					print('QChainedCombo')
 				end
-			elseif (Config.ComboSub.useW and WReady) and target.type == myHero.type and not isBuffed  and not QReady and target ~= nil and GetDistance(target) < 500 + VP:GetHitBox(target) + 25 and not IsMyManaLow() then -- W combo
+			elseif (Config.ComboSub.useW and WReady) and target.type == myHero.type and not isBuffed  and not QReady and target ~= nil and GetDistance(target) < 500 + VP:GetHitBox(target) and not IsMyManaLow() then -- W combo
 				CastW(target)
 				if Config.Extras.Debug then
 					print('WChainedCombo')
 				end
 			end
 		elseif Config.Harass then
-			if (Config.HarassSub.useQ and QReady) and target.type == myHero.type and not isBuffed  and target ~= nil and GetDistance(target) < 500 + VP:GetHitBox(target) + 25 and not IsMyManaLowHarass() then -- Q Harass
+			if (Config.HarassSub.useQ and QReady) and target.type == myHero.type and not isBuffed  and target ~= nil and GetDistance(target) < 500 + VP:GetHitBox(target) and not IsMyManaLowHarass() then -- Q Harass
 				CastQ(target)
 				if Config.Extras.Debug then
 					print('QChainedHarass')
 				end
-			elseif (Config.HarassSub.useW and WReady) and target.type == myHero.type and not isBuffed  and not QReady and target ~= nil and GetDistance(target) < 500 + VP:GetHitBox(target) + 25 and not IsMyManaLowHarass() then -- W Harass
+			elseif (Config.HarassSub.useW and WReady) and target.type == myHero.type and not isBuffed  and not QReady and target ~= nil and GetDistance(target) < 500 + VP:GetHitBox(target)  and not IsMyManaLowHarass() then -- W Harass
 				CastW(target)
 				if Config.Extras.Debug then
 					print('WChainedHarass')
@@ -632,9 +634,9 @@ function OnGainBuff(unit, buff)
 		isPressedR = true
 	end
 
-	if unit.isMe and (buff.type == 5 or buff.type == 10 or buff.type == 11) and EReady and Config.Extras.ESlows then
-		CastE()
-	end
+	-- if unit.isMe and (buff.type == 5 or buff.type == 10 or buff.type == 11) and EReady and Config.Extras.ESlows then
+	-- 	CastE()
+	-- end
 end
 
 function OnLoseBuff(unit, buff)
