@@ -1,4 +1,4 @@
-local version = "1.16"
+local version = "1.17"
 --[[
 
 Velkoz, The Geometry Nightmare
@@ -56,6 +56,8 @@ v1.14 - Fixed compatibility with VPred 2.404
 v1.15 - ???
 
 v1.16 - Fixed R autolock packet changes
+
+v1.17 - 4.13 Fixes + adjustments 
 
 Todo:
 
@@ -148,9 +150,9 @@ local ignite = nil
 local igniteReady = nil
 local QAdditionalDistance = 435
 local SpellQ = {Range = 1050, Speed = 1300, Delay = 0.066, Width = 50}
-local SpellW = {Range = 1050, Speed = 1700, Delay = 0.064, Width = 65}
+local SpellW = {Range = 1050, Speed = 1700, Delay = 0.064, Width = 80}
 local SpellE = {Range = 850, Speed = 1500, Delay = 0.333, Width = 120}
-local SpellR = {Range = 1500, Speed = 20000, Delay = 0.250, Width = 50}
+local SpellR = {Range = 1550, Speed = 20000, Delay = 0.250, Width = 50}
 local QSplitSpeed = 2100
 local InitialTarget = nil
 local LastPacketSend = 0
@@ -228,7 +230,7 @@ function Init()
     --End Vadash Credit
 	ts = TargetSelector(TARGET_LESS_CAST_PRIORITY, 1200, DAMAGE_MAGICAL)
 	ts2 = TargetSelector(TARGET_LESS_CAST_PRIORITY, 1600, DAMAGE_MAGICAL)
-	ts3 = TargetSelector(TARGET_NEAR_MOUSE, 1500, DAMAGE_MAGICAL)
+	ts3 = TargetSelector(TARGET_NEAR_MOUSE, 1550, DAMAGE_MAGICAL)
 	ts.name = "Vel'Koz main"
 	ts2.name = "Q SPLITTING"
 	ts3.name = "R TARGETTING"
