@@ -1,4 +1,4 @@
-local version = "1.04"
+local version = "1.05"
 --[[
 Jayce, Hammer Time - VIP Version
 
@@ -18,6 +18,8 @@ v1.02 - Fixed collision and stuff.
 v1.03 - Fixed dash check errors
 
 v1.04 - Added Q+E mana checks for ranged form
+
+v1.05 - Added Hammer E before Q...had maknoon combo wrong the whole time.
 ]]
 
 if myHero.charName ~= "Jayce" then return end
@@ -566,6 +568,11 @@ end
 
 function Combo(Target)
     if isHammer then
+
+        if Config.ComboSub.useHammerE and HammerEReady then
+            CastHammerE(Target)
+        end
+
         if Config.ComboSub.useHammerQ then
             CastHammerQ(Target)
         end
