@@ -1,4 +1,4 @@
-local version = "0.11"
+local version = "0.12"
 --[[
 
 Free KogMaw!
@@ -28,9 +28,11 @@ v0.09 - Added auto ult on 100% hit
 v0.10 - Corrected ult values - credit to acomma for helping me find better values!
 
 v0.11 - T[RUS] R Values
+
+v0.12 - name fix
 ]]
 
-if myHero.charName ~= "KogMaw" then return end
+if myHero.charName ~= "Kogmaw" then return end
 require 'VPrediction'
 
 --Honda7
