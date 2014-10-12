@@ -1,4 +1,4 @@
-local version = "1.17"
+local version = "1.18"
 --[[
 
 Velkoz, The Geometry Nightmare
@@ -58,6 +58,8 @@ v1.15 - ???
 v1.16 - Fixed R autolock packet changes
 
 v1.17 - 4.13 Fixes + adjustments 
+
+v1.18 - 4.18 R packet fixes
 
 Todo:
 
@@ -1373,7 +1375,7 @@ function OnSendPacket(p)
 		end
 	end
 
-	if p.header == 229 or p.header == 230 and Config.TrackR then
+	if p.header == 230 and Config.TrackR then
 	    -- if Config.Extras.Debug then
      --    	print('p blocked')
    		-- end
@@ -1402,7 +1404,8 @@ function OnSendPacket(p)
 			packet.dwArg1 = result.dwArg1
 			packet.dwArg2 = result.dwArg2
 			packet:EncodeF(result.sourceNetworkId)
-			packet:Encode1(result.spellId)
+			packet:Encode1(0)
+			packet:Encode1(3)
 			packet:EncodeF(target3.x)
 			packet:EncodeF(target3.y)
 			packet:EncodeF(target3.z)
@@ -1413,7 +1416,8 @@ function OnSendPacket(p)
 			packet.dwArg1 = result.dwArg1
 			packet.dwArg2 = result.dwArg2
 			packet:EncodeF(result.sourceNetworkId)
-			packet:Encode1(result.spellId)
+			packet:Encode1(0)
+			packet:Encode1(3)
 			packet:EncodeF(result.fromX)
 			packet:EncodeF(result.fromY)
 			packet:EncodeF(result.fromZ)
