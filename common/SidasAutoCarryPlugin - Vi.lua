@@ -1,4 +1,4 @@
-local version = "0.1"
+local version = "0.11"
 --[[
 Changelog
 
@@ -21,6 +21,8 @@ v0.08 - now will use E when killable and not wait for a reset.
 v0.09 - autoupdater
 
 v0.1 - 2nd cast E stuff
+
+v0.11 - Packet update for 4.18
 ]]--
 
 
@@ -374,7 +376,8 @@ function Send2ndQPacket(xpos, zpos)
 	--PrintChat("Packet Called!")
 	packet = CLoLPacket(0xE6)
 	packet:EncodeF(myHero.networkID)
-	packet:Encode1(128)
+	packet:Encode1(190)
+	packet:Encode1(0)
 	packet:EncodeF(xpos)
 	packet:EncodeF(myHero.y)
 	packet:EncodeF(zpos)
