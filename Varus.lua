@@ -1,4 +1,4 @@
-local version = "0.09"
+local version = "0.10"
 --[[
 
 Free Varus!
@@ -24,6 +24,8 @@ v0.07 - Github
 v0.08 - Separate W stack slider for combo and harass
 
 v0.09 - Fixed 2nd E cast packet
+
+v0.1 - Updated packets for 4.18
 ]]
 if myHero.charName ~= "Varus" then return end
 require 'VPrediction'
@@ -541,7 +543,8 @@ function Send2ndQPacket(xpos, zpos)
 	--PrintChat("Packet Called!")
 	packet = CLoLPacket(0xE6)
 	packet:EncodeF(myHero.networkID)
-	packet:Encode1(128)
+	packet:Encode1(190)
+	packet:Encode1(0)
 	packet:EncodeF(xpos)
 	packet:EncodeF(myHero.y)
 	packet:EncodeF(zpos)
