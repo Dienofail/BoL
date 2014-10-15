@@ -6,6 +6,8 @@ local silentUpdate = false
 local version = 1.2 -- 1.2 by dienofail to fix bilbao's fix of other people's fix of honda's stuff
 
 --[[
+
+    fuck gpu, useless lib
     Introduction:
         We were tired of updating every single script we developed so far so we decided to have it a little bit
         more dynamic with a custom library which we can update instead and every script using it will automatically
@@ -820,9 +822,9 @@ function Spell:Cast(param1, param2)
     -- Cast charged spell
     if param1 ~= nil and param2 ~= nil and self.__charged and self:IsCharging() then
         --print("Sending xerath Q")
-        local p = CLoLPacket(0xE6) 
-        p:EncodeF(myHero.networkID)
-        p:Encode1(0xEA)
+        local p = CLoLPacket(230) 
+        p:EncodeF(player.networkID)
+        p:Encode1(0xE2)
         p:Encode1(0)
         p:EncodeF(param1)
         p:EncodeF(0)
