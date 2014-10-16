@@ -1,4 +1,4 @@
-local version = "0.10"
+local version = "0.11"
 --[[
 
 Free Varus!
@@ -26,6 +26,8 @@ v0.08 - Separate W stack slider for combo and harass
 v0.09 - Fixed 2nd E cast packet
 
 v0.1 - Updated packets for 4.18
+
+v0.11 - Added SoW and improved Q casting somewhat
 ]]
 if myHero.charName ~= "Varus" then return end
 require 'VPrediction'
@@ -108,7 +110,10 @@ local Qdifftime = 0
 local force2Q
 local loaded = false
 local dfgSlot, dfgReady = nil, false
-
+local Menu = nil
+local MMAloaded = false
+local SACloaded = false
+local SowLoaded = false 
 
 --SkillE = AutoCarry.Skills:NewSkill(false, _E, 1000, "Varus E", AutoCarry.SPELL_LINEAR, 0, false, false, 1.500, 266, 270, false)
 --SkillR = AutoCarry.Skills:NewSkill(false, _R, 1200, "Varus R", AutoCarry.SPELL_LINEAR, 0, false, false, 1.950, 251, 100, false)
@@ -129,8 +134,33 @@ function OnLoad()
 	if _G.MMA_Loaded then
 		loaded = true
 	else
-		DelayAction(delayed, 10)
+		DelayAction(checkOrbwalker, 10)
 	end
+
+end
+function checkOrbwalker()
+    if _G.MMA_Loaded ~= nil and _G.MMA_Loaded then
+        MMAloaded = true
+        print('MMA detected')
+    elseif _G.AutoCarry then
+        SACloaded = true
+        Skills, Keys, Items, Data, Jungle, Helper, MyHero, Minions, Crosshair, Orbwalker = AutoCarry.Helper:GetClasses()
+        print('SAC detected')
+    elseif FileExist(LIB_PATH .."SOW.lua") then
+        require "SOW"
+        SOWi = SOW(VP)
+        SowLoaded = true
+        --SOWi:RegisterAfterAttackCallback(AutoAttackReset)
+        print('SOW loaded')
+        DelayAction(function()
+        	print('Adding SoW to menu')
+	        Menu:addSubMenu("Orbwalker", "SOWiorb")
+	        SOWi:LoadToMenu(Menu.SOWiorb)
+        end, 10)
+    else
+        print('Please use SAC, MMA, or SOW for your orbwalker')
+    end
+    loaded = true
 end
 
 -- To make sure no error because SAC takes 9001 years to load
@@ -143,6 +173,7 @@ end
 
 function OnTick()
 	--print(Qdifftime)
+
 	Checks()
 	UpdateQCasttime()
 	CheckQCastTime()
@@ -390,7 +421,7 @@ function OnLoseBuff(unit, buff)
 
 		if SACloaded then 
 			MyHero:AttacksEnabled(true)
-		else
+		elseif MMAloaded then
 			_G.MMA_ResetAutoAttack()
 		end
 
@@ -454,14 +485,16 @@ function Cast2ndQTargetManual(Target)
 	if QREADY and ValidTarget(Target) and GetDistance(myHero, Target) < 1700 and isPressedQ and Qcasttime > Menu.qsettings.QBuffer then
 		QCastPosition, QHitChance, QPosition = VP:GetLineCastPosition(Target, 0.250, qWidth, CurrentRange, qSpeed, myHero)
 		to_move_position = myHero + (Vector(QCastPosition) - myHero):normalized()*60 
+		to_move_position = {x = to_move_position.x, z = to_move_position.z}
 		--print(to_move_position)
 		if QCastPosition ~= nil and QHitChance > 1 and GetDistance(QCastPosition, myHero) < CurrentRange then
-			--MyHero:Move(to_move_position)
+			myHero:MoveTo(to_move_position.x, to_move_position.z)
 			--print('Move 1 to called at ' .. tostring(to_move_position))
-			Send2ndQPacket(QCastPosition.x, QCastPosition.z)
+			DelayAction(function() Send2ndQPacket(QCastPosition.x, QCastPosition.z) end, 0.05)
 			if SACloaded then 
 				MyHero:AttacksEnabled(true)
-			else
+			elseif MMAloaded then
+
 				_G.MMA_ResetAutoAttack()
 			end
 			--print('Move 3 to called at ' .. tostring(to_move_position))
@@ -477,42 +510,44 @@ function Cast2ndQTarget(Target)
 		QCastPosition, QHitChance, QPosition = VP:GetLineCastPosition(Target, 0.250, qWidth, CurrentRange, qSpeed, myHero)
 		--to_move_position = myHero + (Vector(QCastPosition) - myHero):normalized()*60 
 		--print(to_move_position)
-		if (QCastPosition == nil or QHitChance == nil) then
+		if (QCastPosition == nil or QHitChance == nil) and not CheckQPosition(QCastPosition, Target) then
 			return
 		end
 		to_move_position = myHero + (Vector(QCastPosition) - myHero):normalized()*60 
+		to_move_position = {x = to_move_position.x, z = to_move_position.z}
 		if QHitChance > 1 and GetDistance(QCastPosition, myHero) < CurrentRange then
-			--MyHero:Move(to_move_position)
+			myHero:MoveTo(to_move_position.x, to_move_position.z)
 			--print('Move 1 to called at ' .. tostring(to_move_position))
-			Send2ndQPacket(QCastPosition.x, QCastPosition.z)
+			DelayAction(function() Send2ndQPacket(QCastPosition.x, QCastPosition.z) end, 0.05)
 			if SACloaded then 
 				MyHero:AttacksEnabled(true)
-			else
+			elseif MMAloaded then
 				_G.MMA_ResetAutoAttack()
 			end
 		elseif Qcasttime > Menu.qsettings.QMaxBuffer/2 and QHitChance > 0 and GetDistance(QCastPosition, myHero) < CurrentRange then
-			--myHero:Move(to_move_position)
-			Send2ndQPacket(QCastPosition.x, QCastPosition.z)
+			myHero:MoveTo(to_move_position.x, to_move_position.z)
+			DelayAction(function() Send2ndQPacket(QCastPosition.x, QCastPosition.z) end, 0.05)
 			if SACloaded then 
 				MyHero:AttacksEnabled(true)
-			else
+			elseif MMAloaded then
 				_G.MMA_ResetAutoAttack()
 			end
 			--print('Move 2 to called at ' .. tostring(to_move_position))
 		elseif Qcasttime > Menu.qsettings.QMaxBuffer and GetDistance(QCastPosition, myHero) < CurrentRange then
-			--MyHero:Move(to_move_position)
-			Send2ndQPacket(QCastPosition.x, QCastPosition.z)
+			myHero:MoveTo(to_move_position.x, to_move_position.z)
+			DelayAction(function() Send2ndQPacket(QCastPosition.x, QCastPosition.z) end, 0.05)
 			if SACloaded then 
 				MyHero:AttacksEnabled(true)
-			else
+			elseif MMAloaded then
 				_G.MMA_ResetAutoAttack()
 			end
 			--print('Move 3 to called at ' .. tostring(to_move_position))
 		elseif CurrentRange > GetDistance(Target) + 50 and CurrentRange > GetDistance(QCastPosition) + 50 and Qcasttime > Menu.qsettings.QMaxBuffer/4 then
-			Send2ndQPacket(QCastPosition.x, QCastPosition.z)
+			myHero:MoveTo(to_move_position.x, to_move_position.z)
+			DelayAction(function() Send2ndQPacket(QCastPosition.x, QCastPosition.z) end, 0.05)
 			if SACloaded then 
 				MyHero:AttacksEnabled(true)
-			else
+			elseif MMAloaded then
 				_G.MMA_ResetAutoAttack()
 			end
 		end
@@ -555,6 +590,32 @@ function Send2ndQPacket(xpos, zpos)
 --nID, spell, x, y, z
 end
 
+function CheckQPosition(targetPosition, Target)
+	if targetPosition == nil or Target == nil then
+		return false
+	else
+		local toTargetVector = Vector(Vector(Target) - Vector(myHero)):normalized()
+		local toPositionVector = Vector(Vector(Position) - Vector(myHero)):normalized()
+		if toPositionVector:angle(toTargetVector) > math.pi/2 or toPositionVector:angle(toTargetVector) < -math.pi/2 then
+			return false
+		else
+			return true
+		end
+	end
+end
+
+function GetCustomTarget()
+    ts:update()
+    ts2:update()
+    if _G.MMA_Target and _G.MMA_Target.type == myHero.type then return _G.MMA_Target end
+    if _G.AutoCarry and _G.AutoCarry.Crosshair and _G.AutoCarry.Attack_Crosshair and _G.AutoCarry.Attack_Crosshair.target and _G.AutoCarry.Attack_Crosshair.target.type == myHero.type then return _G.AutoCarry.Attack_Crosshair.target end
+    if ts.target ~= nil then
+        return ts.target
+    else
+        return ts2.target
+    end
+end
+
 function Checks()
 	QREADY = (myHero:CanUseSpell(_Q) == READY)
 	WREADY = (myHero:CanUseSpell(_W) == READY)
@@ -567,10 +628,11 @@ function Checks()
 		ignite = SUMMONER_2 
 	end
 	if loaded then
-		if _G.MMA_Loaded then
-			Target = _G.MMA_Target
-		else Target = AutoCarry.Crosshair:GetTarget()
-		end
+		-- if _G.MMA_Loaded then
+		-- 	Target = _G.MMA_Target
+		-- else Target = AutoCarry.Crosshair:GetTarget()
+		-- end
+		Target = GetCustomTarget()
 	end
 	dfgSlot = GetInventorySlotItem(3128)
 	dfgReady = (dfgSlot ~= nil and myHero:CanUseSpell(dfgSlot) == READY)
@@ -621,4 +683,10 @@ function Menu()
 		Menu.rsettings:addParam("LastRbounces", "Min R bounces", SCRIPT_PARAM_SLICE, 0, 0, 3, 0)
 	Menu:addParam("ManaManager", "Mana Manager", SCRIPT_PARAM_SLICE, 0, 0, 100, 0)	
 
+   	ts = TargetSelector(TARGET_LESS_CAST_PRIORITY, 600, DAMAGE_PHYSICAL)
+	ts2 = TargetSelector(TARGET_LESS_CAST_PRIORITY, 1400, DAMAGE_PHYSICAL)
+    ts.name = "Ranged Main"
+    ts2.name = "Ranged Q"
+    Menu:addTS(ts2)
+    Menu:addTS(ts)
 end
