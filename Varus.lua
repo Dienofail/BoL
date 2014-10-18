@@ -1,4 +1,4 @@
-local version = "0.11"
+local version = "0.12"
 --[[
 
 Free Varus!
@@ -28,6 +28,8 @@ v0.09 - Fixed 2nd E cast packet
 v0.1 - Updated packets for 4.18
 
 v0.11 - Added SoW and improved Q casting somewhat
+
+v0.12 - small fixes
 ]]
 if myHero.charName ~= "Varus" then return end
 require 'VPrediction'
@@ -490,7 +492,7 @@ function Cast2ndQTargetManual(Target)
 		if QCastPosition ~= nil and QHitChance > 1 and GetDistance(QCastPosition, myHero) < CurrentRange then
 			myHero:MoveTo(to_move_position.x, to_move_position.z)
 			--print('Move 1 to called at ' .. tostring(to_move_position))
-			DelayAction(function() Send2ndQPacket(QCastPosition.x, QCastPosition.z) end, 0.05)
+			Send2ndQPacket(QCastPosition.x, QCastPosition.z)
 			if SACloaded then 
 				MyHero:AttacksEnabled(true)
 			elseif MMAloaded then
@@ -518,7 +520,7 @@ function Cast2ndQTarget(Target)
 		if QHitChance > 1 and GetDistance(QCastPosition, myHero) < CurrentRange then
 			myHero:MoveTo(to_move_position.x, to_move_position.z)
 			--print('Move 1 to called at ' .. tostring(to_move_position))
-			DelayAction(function() Send2ndQPacket(QCastPosition.x, QCastPosition.z) end, 0.05)
+			Send2ndQPacket(QCastPosition.x, QCastPosition.z)
 			if SACloaded then 
 				MyHero:AttacksEnabled(true)
 			elseif MMAloaded then
@@ -526,7 +528,7 @@ function Cast2ndQTarget(Target)
 			end
 		elseif Qcasttime > Menu.qsettings.QMaxBuffer/2 and QHitChance > 0 and GetDistance(QCastPosition, myHero) < CurrentRange then
 			myHero:MoveTo(to_move_position.x, to_move_position.z)
-			DelayAction(function() Send2ndQPacket(QCastPosition.x, QCastPosition.z) end, 0.05)
+			Send2ndQPacket(QCastPosition.x, QCastPosition.z)
 			if SACloaded then 
 				MyHero:AttacksEnabled(true)
 			elseif MMAloaded then
@@ -535,7 +537,7 @@ function Cast2ndQTarget(Target)
 			--print('Move 2 to called at ' .. tostring(to_move_position))
 		elseif Qcasttime > Menu.qsettings.QMaxBuffer and GetDistance(QCastPosition, myHero) < CurrentRange then
 			myHero:MoveTo(to_move_position.x, to_move_position.z)
-			DelayAction(function() Send2ndQPacket(QCastPosition.x, QCastPosition.z) end, 0.05)
+			Send2ndQPacket(QCastPosition.x, QCastPosition.z)
 			if SACloaded then 
 				MyHero:AttacksEnabled(true)
 			elseif MMAloaded then
@@ -544,7 +546,7 @@ function Cast2ndQTarget(Target)
 			--print('Move 3 to called at ' .. tostring(to_move_position))
 		elseif CurrentRange > GetDistance(Target) + 50 and CurrentRange > GetDistance(QCastPosition) + 50 and Qcasttime > Menu.qsettings.QMaxBuffer/4 then
 			myHero:MoveTo(to_move_position.x, to_move_position.z)
-			DelayAction(function() Send2ndQPacket(QCastPosition.x, QCastPosition.z) end, 0.05)
+			Send2ndQPacket(QCastPosition.x, QCastPosition.z)
 			if SACloaded then 
 				MyHero:AttacksEnabled(true)
 			elseif MMAloaded then
